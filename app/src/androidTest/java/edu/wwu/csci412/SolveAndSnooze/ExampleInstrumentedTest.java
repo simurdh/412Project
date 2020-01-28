@@ -1,4 +1,4 @@
-package edu.wwu.csci412.testapp;
+package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Context;
 
