@@ -13,10 +13,12 @@
         >
 
         <TextView
+            style="@style/mathSolveTitle"
+            android:id="@+id/title_solve"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="hello there"
+            android:text="SOLVE!"
             />
 
         <LinearLayout
@@ -27,6 +29,7 @@
             >
 
             <LinearLayout
+                android:id="@+id/question1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -34,13 +37,16 @@
                 >
 
                 <TextView
+                    style="@style/mathQuestionText"
+                    android:id="@+id/question1_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight=".33"
-                    android:text="Question text"
+                    android:text="5 x 12"
                     />
 
                 <EditText
+                    android:id="@+id/question1_input"
                     android:layout_height="match_parent"
                     android:layout_width="match_parent"
                     android:layout_weight=".64"
@@ -50,6 +56,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/question2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -57,13 +64,16 @@
                 >
 
                 <TextView
+                    style="@style/mathQuestionText"
+                    android:id="@+id/question2_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight=".33"
-                    android:text="Question text"
+                    android:text="17 - 12"
                     />
 
                 <EditText
+                    android:id="@+id/question2_input"
                     android:layout_height="match_parent"
                     android:layout_width="match_parent"
                     android:layout_weight=".64"
@@ -73,6 +83,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/question3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -80,13 +91,16 @@
                 >
 
                 <TextView
+                    style="@style/mathQuestionText"
+                    android:id="@+id/question3_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight=".33"
-                    android:text="Question text"
+                    android:text="4 x 7"
                     />
 
                 <EditText
+                    android:id="@+id/question3_input"
                     android:layout_height="match_parent"
                     android:layout_width="match_parent"
                     android:layout_weight=".64"
@@ -99,10 +113,11 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/submitButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="General kenobi"
+            android:text="Submit"
             />
 
     </LinearLayout>

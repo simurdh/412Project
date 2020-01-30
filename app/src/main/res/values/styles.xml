@@ -8,4 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name ="mathQuestionText" parent="@android:style/TextAppearance">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">15pt</item>
+    </style>
+
+    <style name="mathSolveTitle" parent="@android:style/TextAppearance">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">20pt</item>
+    </style>
 </resources>
