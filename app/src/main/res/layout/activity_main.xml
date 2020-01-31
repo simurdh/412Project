@@ -27,8 +27,7 @@
                 android:id="@+id/EditButton"
                 android:layout_width="62dp"
                 android:layout_height="match_parent"
-                android:text="Edit"
-                android:onClick="onClickSwitchGame"/>
+                android:text="Edit"/>
 
             <TextView
                 android:id="@+id/alarmTitle"
@@ -108,8 +107,8 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <ImageButton
                 android:id="@+id/addAlarmButton"
@@ -117,7 +116,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
                 android:layout_marginEnd="17dp"
                 android:layout_marginRight="17dp"
                 android:layout_marginBottom="21dp"
@@ -130,12 +128,10 @@
                 android:layout_height="65dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
                 android:layout_marginStart="12dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginBottom="12dp"
                 android:text="Challenge!"
-                android:onClick="onClickSwitchGame"
                 app:layout_constraintStart_toStartOf="parent" />
         </RelativeLayout>
 

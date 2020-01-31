@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.wwu.csci412.SolveAndSnooze.Math_solve">
+    tools:context="edu.wwu.csci412.SolveAndSnooze.MathPuzzle">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:onClick="onClickSwitch"
             android:text="SOLVE!"
             />
 

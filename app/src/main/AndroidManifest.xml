@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Math_solve"></activity>
+        <activity android:name=".MathPuzzle"></activity>
+        <activity android:name="EditAlarm"></activity>
+        <activity android:name=".MemoryPuzzle"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

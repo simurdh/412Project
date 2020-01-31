@@ -13,13 +13,13 @@
         >
 
         <Button
+            android:id="@+id/solveButton"
             android:layout_width="match_parent"
             android:background="@color/gray"
             android:layout_height="wrap_content"
             android:text="Solve!"
             android:textSize="50dp"
             android:textAlignment="center"
-            android:onClick="onClickSwitch"
             android:layout_margin="50dp">
         </Button>
 
