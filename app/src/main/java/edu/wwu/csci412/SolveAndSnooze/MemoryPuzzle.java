@@ -22,6 +22,7 @@ public class MemoryPuzzle extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
+
     }
 
 
