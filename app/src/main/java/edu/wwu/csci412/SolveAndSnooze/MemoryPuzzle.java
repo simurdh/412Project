@@ -105,6 +105,7 @@ public class MemoryPuzzle extends AppCompatActivity {
 
     private void getImages() {
         Resources r  = getApplicationContext().getResources();
+        // All possible images for the memory puzzle
         images = new ArrayList<>();
         images.add(r.getDrawable(R.drawable.dinosaur_128px));
         images.add(r.getDrawable(R.drawable.bat_128px));
@@ -117,7 +118,41 @@ public class MemoryPuzzle extends AppCompatActivity {
         images.add(r.getDrawable(R.drawable.cat_128px));
         images.add(r.getDrawable(R.drawable.cheetah_128px));
         images.add(r.getDrawable(R.drawable.chicken_128px));
-        images.add(r.getDrawable(R.drawable.coala_128px));
+        images.add(r.getDrawable(R.drawable.cow_128px));
+        images.add(r.getDrawable(R.drawable.crocodile_128px));
+        images.add(r.getDrawable(R.drawable.dinosaur_128px));
+        images.add(r.getDrawable(R.drawable.dog_128px));
+        images.add(r.getDrawable(R.drawable.dolphin_128px));
+        images.add(r.getDrawable(R.drawable.dove_128px));
+        images.add(r.getDrawable(R.drawable.duck_128px));
+        images.add(r.getDrawable(R.drawable.eagle_128px));
+        images.add(r.getDrawable(R.drawable.elephant_128px));
+        images.add(r.getDrawable(R.drawable.fish_128px));
+        images.add(r.getDrawable(R.drawable.flamingo_128px));
+        images.add(r.getDrawable(R.drawable.fox_128px));
+        images.add(r.getDrawable(R.drawable.frog_128px));
+        images.add(r.getDrawable(R.drawable.giraffe_128px));
+        images.add(r.getDrawable(R.drawable.gorilla_128px));
+        images.add(r.getDrawable(R.drawable.horse_128px));
+        images.add(r.getDrawable(R.drawable.kangoroo_128px));
+        images.add(r.getDrawable(R.drawable.leopard_128px));
+        images.add(r.getDrawable(R.drawable.lion_128px));
+        images.add(r.getDrawable(R.drawable.monkey_128px));
+        images.add(r.getDrawable(R.drawable.mouse_128px));
+        images.add(r.getDrawable(R.drawable.panda_128px));
+        images.add(r.getDrawable(R.drawable.parrot_128px));
+        images.add(r.getDrawable(R.drawable.penguin_128px));
+        images.add(r.getDrawable(R.drawable.shark_128px));
+        images.add(r.getDrawable(R.drawable.sheep_128px));
+        images.add(r.getDrawable(R.drawable.snake_128px));
+        images.add(r.getDrawable(R.drawable.spider_128px));
+        images.add(r.getDrawable(R.drawable.squirrel_128px));
+        images.add(r.getDrawable(R.drawable.starfish_128px));
+        images.add(r.getDrawable(R.drawable.tiger_128px));
+        images.add(r.getDrawable(R.drawable.turtle_128px));
+        images.add(r.getDrawable(R.drawable.wolf_128px));
+        images.add(r.getDrawable(R.drawable.zebra_128px));
+
 
 
         Random rand = new Random(System.currentTimeMillis());
