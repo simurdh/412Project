@@ -16,15 +16,19 @@ import java.util.Random;
 
 public class MemoryPuzzle extends AppCompatActivity {
 
-    private Drawable img1;
-    private Drawable img2;
-    private Drawable img3;
-    private Drawable img4;
-    private Drawable img5;
-    private Drawable img6;
+    List<Drawable> images;
+    List<Drawable> selectedImages;
 
-    private HashMap<Drawable, Integer> imgMap; //map of images not turned over and how many have been turned over
+    private Button firstClicked;
+    private Drawable firstImage;
+    private int pairsFound;
 
+    private Button secondClicked;
+    private Drawable secondImage;
+
+    private HashMap<Button, Drawable> buttonImages;
+
+    private boolean match; //keeps track of if last pair was a match
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,30 +53,59 @@ public class MemoryPuzzle extends AppCompatActivity {
     private class gridButtonClicked implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Random r = new Random(System.currentTimeMillis());
-            List<Drawable> keys = new ArrayList<>(imgMap.keySet());
-            Drawable img = keys.get(r.nextInt(keys.size()));
-            int uncovered = imgMap.get(img) + 1;
+            Resources r  = getApplicationContext().getResources();
 
-
-            if (uncovered > 1) {
-                // Both images have been turned over!
-                imgMap.remove(img);
-
-            } else {
-                imgMap.put(img, uncovered);
-            }
+            Random rand = new Random(System.currentTimeMillis());
+            int index = rand.nextInt(images.size());
+            Drawable img = buttonImages.get(v);
 
             v.setBackgroundDrawable(img);
-            v.setEnabled(false);
+
+            // first image clicked
+            if (firstImage == null) {
+                // Check if we need to reset previous images
+                if (!match) {
+                    if (firstClicked != null && secondClicked != null) {
+                        firstClicked.setBackgroundColor(r.getColor(R.color.teal));
+                        secondClicked.setBackgroundColor(r.getColor(R.color.teal));
+                        firstClicked.setEnabled(true);
+                        secondClicked.setEnabled(true);
+                    }
+                }
+
+                firstImage = img;
+                firstClicked = (Button) v;
+                v.setEnabled(false);
+
+            } else {
+                //second image clicked
+                secondImage = img;
+                secondClicked = (Button) v;
+
+                if (firstImage == secondImage) {
+                    // match!
+                    v.setEnabled(false);
+                    match = true;
+                    pairsFound++;
+                    if (pairsFound == 6) {
+                        Intent intent = new Intent(v.getContext(), MathPuzzle.class);
+                        startActivityForResult(intent, 0);
+                    }
+                } else {
+                    // unmatch!
+                    match = false;
+                    v.setEnabled(true);
+                }
+
+                firstImage = null;
+                secondImage = null;
+            }
         }
     }
 
     private void getImages() {
-        // TODO:
-
         Resources r  = getApplicationContext().getResources();
-        ArrayList<Drawable> images = new ArrayList<>();
+        images = new ArrayList<>();
         images.add(r.getDrawable(R.drawable.dinosaur_128px));
         images.add(r.getDrawable(R.drawable.bat_128px));
         images.add(r.getDrawable(R.drawable.bear_128px));
@@ -88,75 +121,124 @@ public class MemoryPuzzle extends AppCompatActivity {
 
 
         Random rand = new Random(System.currentTimeMillis());
-        int index = rand.nextInt() % images.size();
-        img1 = images.get(index);
+        int index = rand.nextInt(images.size());
+        Drawable img1 = images.get(index);
         images.remove(index);
 
         index = rand.nextInt(images.size());
-        img2 = images.get(index);
+        Drawable img2 = images.get(index);
         images.remove(index);
 
         index = rand.nextInt(images.size());
-        img3 = images.get(index);
+        Drawable img3 = images.get(index);
         images.remove(index);
 
         index = rand.nextInt(images.size());
-        img4 = images.get(index);
+        Drawable img4 = images.get(index);
         images.remove(index);
 
         index = rand.nextInt(images.size());
-        img5 = images.get(index);
+        Drawable img5 = images.get(index);
         images.remove(index);
 
         index = rand.nextInt(images.size());
-        img6 = images.get(index);
+        Drawable img6 = images.get(index);
         images.remove(index);
 
 
-        imgMap = new HashMap<>();
-        imgMap.put(img1, 0);
-        imgMap.put(img2, 0);
-        imgMap.put(img3, 0);
-        imgMap.put(img4, 0);
-        imgMap.put(img5, 0);
-        imgMap.put(img6, 0);
+        selectedImages = new ArrayList<>();
+        selectedImages.add(img1);
+        selectedImages.add(img2);
+        selectedImages.add(img3);
+        selectedImages.add(img4);
+        selectedImages.add(img5);
+        selectedImages.add(img6);
+        selectedImages.add(img1);
+        selectedImages.add(img2);
+        selectedImages.add(img3);
+        selectedImages.add(img4);
+        selectedImages.add(img5);
+        selectedImages.add(img6);
     }
 
     private void initButtons() {
+        Random rand = new Random(System.currentTimeMillis());
+        pairsFound = 0;
+
+        // Associate buttons with images
+        buttonImages = new HashMap<>();
+
         Button b00 = findViewById(R.id.c0r0);
         b00.setOnClickListener(new gridButtonClicked());
+        int index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b00, selectedImages.get(index));
+        selectedImages.remove(index);
+
 
         Button b10 = findViewById(R.id.c1r0);
         b10.setOnClickListener(new gridButtonClicked());
+        index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b10, selectedImages.get(index));
+        selectedImages.remove(index);
 
         Button b20 = findViewById(R.id.c2r0);
         b20.setOnClickListener(new gridButtonClicked());
+        index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b20, selectedImages.get(index));
+        selectedImages.remove(index);
 
         Button b01 = findViewById(R.id.c0r1);
         b01.setOnClickListener(new gridButtonClicked());
+        index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b01, selectedImages.get(index));
+        selectedImages.remove(index);
 
         Button b11 = findViewById(R.id.c1r1);
         b11.setOnClickListener(new gridButtonClicked());
+        index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b11, selectedImages.get(index));
+        selectedImages.remove(index);
 
         Button b21 = findViewById(R.id.c2r1);
         b21.setOnClickListener(new gridButtonClicked());
+        index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b21, selectedImages.get(index));
+        selectedImages.remove(index);
 
         Button b02 = findViewById(R.id.c0r2);
         b02.setOnClickListener(new gridButtonClicked());
+        index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b02, selectedImages.get(index));
+        selectedImages.remove(index);
 
         Button b12 = findViewById(R.id.c1r2);
         b12.setOnClickListener(new gridButtonClicked());
+        index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b12, selectedImages.get(index));
+        selectedImages.remove(index);
 
         Button b22 = findViewById(R.id.c2r2);
         b22.setOnClickListener(new gridButtonClicked());
+        index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b22, selectedImages.get(index));
+        selectedImages.remove(index);
 
         Button b03 = findViewById(R.id.c0r3);
         b03.setOnClickListener(new gridButtonClicked());
+        index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b03, selectedImages.get(index));
+        selectedImages.remove(index);
 
         Button b13 = findViewById(R.id.c1r3);
         b13.setOnClickListener(new gridButtonClicked());
+        index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b13, selectedImages.get(index));
+        selectedImages.remove(index);
 
         Button b23 = findViewById(R.id.c2r3);
         b23.setOnClickListener(new gridButtonClicked());
+        index = rand.nextInt(selectedImages.size());
+        buttonImages.put(b23, selectedImages.get(index));
+        selectedImages.remove(index);
     }
 }
