@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,7 +16,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
 
+    public void onStart() {
+        super.onStart();
+        updateView();
+    }
+
+    public void updateView() {
         Button editButton = findViewById(R.id.EditButton);
         Button challengeButton = findViewById(R.id.challengeButton);
         ImageButton addAlarm = findViewById(R.id.addAlarmButton);
@@ -39,9 +48,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
-
-
     }
-
-
 }
