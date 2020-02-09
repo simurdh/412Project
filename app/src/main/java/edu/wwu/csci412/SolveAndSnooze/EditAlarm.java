@@ -24,9 +24,12 @@ public class EditAlarm extends AppCompatActivity {
 
     public void updateView() {
         Button saveButton = findViewById(R.id.saveButton);
+        final AlarmData alarmData = MainActivity.alarmData;
 
+        /* set alarm data preferences and switch to main activity */
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                alarmData.setPreferences(EditAlarm.this);
                 Intent intent = new Intent(v.getContext(), MainActivity.class);
                 startActivityForResult(intent, 0);
             }

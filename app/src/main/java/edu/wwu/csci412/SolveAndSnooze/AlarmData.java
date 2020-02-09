@@ -22,6 +22,7 @@ public class AlarmData {
 
     }
 
+    /* set alarm time preferences */
     public void setPreferences(Context context) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = pref.edit();
@@ -31,6 +32,7 @@ public class AlarmData {
         editor.apply();
     }
 
+    /* getters and setters for alarm data */
     public void setHour(int hour) { this.hour = hour; }
     public int getHour() { return this.hour; }
 
@@ -39,6 +41,5 @@ public class AlarmData {
 
     public void setAM_PM(String am_pm) { this.am_pm = am_pm; }
     public String getAM_PM() { return this.am_pm; }
-
 
 }

@@ -11,10 +11,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class MainActivity extends AppCompatActivity {
+    public static AlarmData alarmData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        alarmData = new AlarmData(this);
         setContentView(R.layout.activity_main);
     }
 
