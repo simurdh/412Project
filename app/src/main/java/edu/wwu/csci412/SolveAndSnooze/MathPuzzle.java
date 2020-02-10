@@ -9,6 +9,18 @@ import android.widget.Button;
 
 public class MathPuzzle extends AppCompatActivity {
 
+    // THESE FIELDS SHOULD BE MOVED TO A MODEL
+
+    private enum Operator {
+        mul, div, sub, add
+    }
+
+    private int[] lOperands = new int[3];
+    private int[] rOperands = new int[3];
+    private Operator[] operators = new Operator[3];
+
+    // \FIELDS
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +34,11 @@ public class MathPuzzle extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
+    }
+
+    private void setQuesitions(){
+
+
     }
 
 }
