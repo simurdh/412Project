@@ -8,8 +8,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="409dp"
-        android:layout_height="726dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="#888888"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"

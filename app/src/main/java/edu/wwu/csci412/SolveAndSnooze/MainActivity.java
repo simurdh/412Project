@@ -93,10 +93,16 @@ public class MainActivity extends AppCompatActivity {
                 if(alarmCheckBox.isChecked())
                 {
                     Calendar cal = Calendar.getInstance();
-                    cal.set(Calendar.HOUR_OF_DAY,alarmData.getHour());
+                    if(alarmData.getAM_PM().equals("PM"))
+                    {
+                        cal.set(Calendar.HOUR_OF_DAY,alarmData.getHour()+12);
+                    }
+                    else
+                    {
+                      cal.set(Calendar.HOUR_OF_DAY,alarmData.getHour());
+                    }
                     cal.set(Calendar.MINUTE,alarmData.getMinutes());
                     cal.set(Calendar.SECOND, 0);
-
                     am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
                 }
                 else
