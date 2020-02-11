@@ -8,8 +8,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="409dp"
-        android:layout_height="726dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="#888888"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:paddingLeft="20dp"
                         android:text="6:00 AM"
-                        android:textSize="25dp" />
+                        android:textSize="20dp" />
 
                     <TextView
                         android:id="@+id/alarmDays"
@@ -75,7 +75,7 @@
                         android:layout_height="wrap_content"
                         android:paddingLeft="10dp"
                         android:text="M T W Th F"
-                        android:textSize="20dp" />
+                        android:textSize="16dp" />
 
                 </LinearLayout>
 
@@ -86,7 +86,7 @@
 
                     <TextView
                         android:id="@+id/alarmChallenges"
-                        android:layout_width="wrap_content"
+                        android:layout_width="292dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:paddingLeft="25dp"
@@ -97,12 +97,14 @@
 
             </LinearLayout>
 
-            <Switch
-                android:id="@+id/alarmSwitch"
-                android:layout_width="wrap_content"
+            <CheckBox
+                android:id="@+id/alarmCheckBox"
+                android:layout_width="37dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:paddingRight="10dp" />
+                android:gravity="center"
+                android:layout_marginLeft="10dp"/>
+
 
         </LinearLayout>
 
