@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+/* edit alarm screen controller */
 public class EditAlarm extends AppCompatActivity {
 
     @Override
@@ -25,6 +25,7 @@ public class EditAlarm extends AppCompatActivity {
     }
 
     public void updateView() {
+        /* widgets on screen */
         Button saveButton = findViewById(R.id.saveButton);
         final AlarmData alarmData = MainActivity.alarmData;
 

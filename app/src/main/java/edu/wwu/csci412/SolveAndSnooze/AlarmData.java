@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.TimePicker;
 
+
 public class AlarmData {
+    /* preferences key value pairs */
     public static final String HOUR = "hour";
     public static final String MINUTES = "minutes";
     public static final String AM_PM = "am_pm";
@@ -13,6 +15,7 @@ public class AlarmData {
     public static final String CHALLENGES = "challenges";
     public static final String ACTIVE = "active";
 
+    /* alarm variables */
     private int hour;
     private int minutes;
     private String am_pm;

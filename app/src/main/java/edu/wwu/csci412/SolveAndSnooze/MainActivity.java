@@ -20,7 +20,7 @@ import android.widget.TimePicker;
 import org.w3c.dom.Text;
 
 import java.util.Calendar;
-
+/* main activity screen controller */
 public class MainActivity extends AppCompatActivity {
     public static AlarmData alarmData;
 
@@ -58,11 +58,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateView() {
+        //widgets used on screen
         Button editButton = findViewById(R.id.EditButton);
         Button challengeButton = findViewById(R.id.challengeButton);
         ImageButton addAlarm = findViewById(R.id.addAlarmButton);
         final CheckBox alarmCheckBox = findViewById(R.id.alarmCheckBox);
 
+        // listeners for widgets
         editButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), EditAlarm.class);
@@ -90,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, MemoryPuzzle.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 0, intent, 0);
                 AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+                // enable alarm
                 if(alarmCheckBox.isChecked())
                 {
                     Calendar cal = Calendar.getInstance();
@@ -107,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    //disable alarm
                     am.cancel(pendingIntent);
                 }
             }
