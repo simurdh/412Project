@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         addAlarm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), EditAlarm.class);
+                Intent intent = new Intent(v.getContext(), SensorData.class);
                 startActivityForResult(intent, 0);
             }
         });
