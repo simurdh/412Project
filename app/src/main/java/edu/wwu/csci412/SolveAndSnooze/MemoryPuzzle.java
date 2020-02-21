@@ -3,6 +3,7 @@ package edu.wwu.csci412.SolveAndSnooze;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,13 +21,14 @@ public class MemoryPuzzle extends AppCompatActivity {
     private Button secondClicked;
     private Drawable firstImage;
     private Drawable secondImage;
-
     private boolean match; //keeps track of if last pair was a match
+    private MediaPlayer sound = MediaPlayer.create(this,R.raw.alarm);
 
     private MemoryPuzzleModel memoryPuzzleModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sound.start();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memory_puzzle);
 
@@ -40,6 +42,7 @@ public class MemoryPuzzle extends AppCompatActivity {
     private class solveButtonClicked implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            sound.stop();
             Intent intent = new Intent(v.getContext(), MathPuzzle.class);
             startActivityForResult(intent, 0);
         }

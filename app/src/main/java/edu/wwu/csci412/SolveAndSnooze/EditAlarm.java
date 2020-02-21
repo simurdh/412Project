@@ -50,6 +50,11 @@ public class EditAlarm extends AppCompatActivity {
                     alarmData.setHour(hour-12);
                     alarmData.setAM_PM("PM");
                 }
+                else if (hour == 12)
+                {
+                    alarmData.setHour(hour);
+                    alarmData.setAM_PM("PM");
+                }
                 else
                 {
                     alarmData.setHour(hour);
@@ -77,8 +82,8 @@ public class EditAlarm extends AppCompatActivity {
                 //Get challenge count.
                 SeekBar challenges = findViewById(R.id.seekBar);
                 alarmData.setChallenges(challenges.getProgress());
-
                 alarmData.setPreferences(EditAlarm.this);
+
                 Intent intent = new Intent(v.getContext(), MainActivity.class);
                 startActivityForResult(intent, 0);
             }
