@@ -19,8 +19,8 @@ public class SensorData extends Activity implements SensorEventListener {
 
     private static final String TAG = "SensorData";
     Sensor accelerometer;
-    private static int xAccelInitial;
-    private static int yAccelInitial;
+    private static int xAccelInitial = 0;
+    private static int yAccelInitial = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

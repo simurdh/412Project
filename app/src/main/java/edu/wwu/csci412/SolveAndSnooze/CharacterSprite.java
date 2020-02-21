@@ -56,7 +56,6 @@ public class CharacterSprite {
             if (x > 0) {
                 x += xVelocity;
             }
-
         }
         //move right
         else if (xAccel > 0) {
@@ -71,9 +70,6 @@ public class CharacterSprite {
         else {
             //do nothing
         }
-
-
-
     }
 
 }
