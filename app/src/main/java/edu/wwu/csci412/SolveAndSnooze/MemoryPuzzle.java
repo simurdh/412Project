@@ -2,11 +2,15 @@ package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -20,6 +24,7 @@ public class MemoryPuzzle extends AppCompatActivity {
     private Button secondClicked;
     private Drawable firstImage;
     private Drawable secondImage;
+    private ButtonGridView view;
 
     private boolean match; //keeps track of if last pair was a match
 
@@ -28,13 +33,23 @@ public class MemoryPuzzle extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_memory_puzzle);
 
-        Button solveButton = findViewById(R.id.solveButton);
-        solveButton.setOnClickListener(new solveButtonClicked());
+        Point size = new Point();
+        getWindowManager().getDefaultDisplay().getSize(size);
+        int width = size.x/3;
+        int height = size.y/5 - getStatusBarHeight();
+        int offset = 0; //used to center gridview
+
+        // Choose the smaller of values for the button size, so they will always fit on the screen
+        if (height < width) {
+            offset = (width*3 - height*3)/2;
+            width = height;
+        }
 
         memoryPuzzleModel = new MemoryPuzzleModel(this);
-        initButtons();
+        view = new ButtonGridView(this, width, offset, new gridButtonClicked(), memoryPuzzleModel);
+        setContentView(view);
+
     }
 
     private class solveButtonClicked implements View.OnClickListener {
@@ -95,56 +110,13 @@ public class MemoryPuzzle extends AppCompatActivity {
             }
         }
     }
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
 
-    // Initialize button listeners and images
-    private void initButtons() {
-        Button b00 = findViewById(R.id.c0r0);
-        b00.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b00);
-
-
-        Button b10 = findViewById(R.id.c1r0);
-        b10.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b10);
-
-        Button b20 = findViewById(R.id.c2r0);
-        b20.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b20);
-
-        Button b01 = findViewById(R.id.c0r1);
-        b01.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b01);
-
-        Button b11 = findViewById(R.id.c1r1);
-        b11.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b11);
-
-        Button b21 = findViewById(R.id.c2r1);
-        b21.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b21);
-
-        Button b02 = findViewById(R.id.c0r2);
-        b02.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b02);
-
-        Button b12 = findViewById(R.id.c1r2);
-        b12.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b12);
-
-        Button b22 = findViewById(R.id.c2r2);
-        b22.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b22);
-
-        Button b03 = findViewById(R.id.c0r3);
-        b03.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b03);
-
-        Button b13 = findViewById(R.id.c1r3);
-        b13.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b13);
-
-        Button b23 = findViewById(R.id.c2r3);
-        b23.setOnClickListener(new gridButtonClicked());
-        memoryPuzzleModel.setButtonImage(b23);
     }
 }

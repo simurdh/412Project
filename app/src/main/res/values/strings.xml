@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">TestApp</string>
     <string name="edit">Edit</string>
+    <string name="title">Solve!</string>
 </resources>
