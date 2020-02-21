@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+/* edit alarm screen controller */
 public class EditAlarm extends AppCompatActivity {
 
     @Override
@@ -25,6 +25,7 @@ public class EditAlarm extends AppCompatActivity {
     }
 
     public void updateView() {
+        /* widgets on screen */
         Button saveButton = findViewById(R.id.saveButton);
         final AlarmData alarmData = MainActivity.alarmData;
 
@@ -47,6 +48,11 @@ public class EditAlarm extends AppCompatActivity {
                 if(hour > 12)
                 {
                     alarmData.setHour(hour-12);
+                    alarmData.setAM_PM("PM");
+                }
+                else if (hour == 12)
+                {
+                    alarmData.setHour(hour);
                     alarmData.setAM_PM("PM");
                 }
                 else
@@ -76,8 +82,8 @@ public class EditAlarm extends AppCompatActivity {
                 //Get challenge count.
                 SeekBar challenges = findViewById(R.id.seekBar);
                 alarmData.setChallenges(challenges.getProgress());
-
                 alarmData.setPreferences(EditAlarm.this);
+
                 Intent intent = new Intent(v.getContext(), MainActivity.class);
                 startActivityForResult(intent, 0);
             }

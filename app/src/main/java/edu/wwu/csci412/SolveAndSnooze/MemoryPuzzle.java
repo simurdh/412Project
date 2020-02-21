@@ -3,6 +3,7 @@ package edu.wwu.csci412.SolveAndSnooze;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,35 +17,32 @@ import java.util.Random;
 
 public class MemoryPuzzle extends AppCompatActivity {
 
-    List<Drawable> images;
-    List<Drawable> selectedImages;
-
     private Button firstClicked;
-    private Drawable firstImage;
-    private int pairsFound;
-
     private Button secondClicked;
+    private Drawable firstImage;
     private Drawable secondImage;
-
-    private HashMap<Button, Drawable> buttonImages;
-
     private boolean match; //keeps track of if last pair was a match
+    private MediaPlayer sound = MediaPlayer.create(this,R.raw.alarm);
+
+    private MemoryPuzzleModel memoryPuzzleModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sound.start();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memory_puzzle);
 
         Button solveButton = findViewById(R.id.solveButton);
         solveButton.setOnClickListener(new solveButtonClicked());
 
-        getImages();
+        memoryPuzzleModel = new MemoryPuzzleModel(this);
         initButtons();
     }
 
     private class solveButtonClicked implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            sound.stop();
             Intent intent = new Intent(v.getContext(), MathPuzzle.class);
             startActivityForResult(intent, 0);
         }
@@ -55,9 +53,7 @@ public class MemoryPuzzle extends AppCompatActivity {
         public void onClick(View v) {
             Resources r  = getApplicationContext().getResources();
 
-            Random rand = new Random(System.currentTimeMillis());
-            int index = rand.nextInt(images.size());
-            Drawable img = buttonImages.get(v);
+            Drawable img = memoryPuzzleModel.getButtonImg((Button) v);
 
             v.setBackgroundDrawable(img);
 
@@ -86,13 +82,13 @@ public class MemoryPuzzle extends AppCompatActivity {
                     // match!
                     v.setEnabled(false);
                     match = true;
-                    pairsFound++;
-                    if (pairsFound == 6) {
+                    memoryPuzzleModel.incrementPairsFound();
+                    if (memoryPuzzleModel.getPairsFound() == 6) {
                         Intent intent = new Intent(v.getContext(), MathPuzzle.class);
                         startActivityForResult(intent, 0);
                     }
                 } else {
-                    // unmatch!
+                    // not a match!
                     match = false;
                     v.setEnabled(true);
                 }
@@ -103,177 +99,55 @@ public class MemoryPuzzle extends AppCompatActivity {
         }
     }
 
-    private void getImages() {
-        Resources r  = getApplicationContext().getResources();
-        // All possible images for the memory puzzle
-        images = new ArrayList<>();
-        images.add(r.getDrawable(R.drawable.dinosaur_128px));
-        images.add(r.getDrawable(R.drawable.bat_128px));
-        images.add(r.getDrawable(R.drawable.bear_128px));
-        images.add(r.getDrawable(R.drawable.bee_128px));
-        images.add(r.getDrawable(R.drawable.bird_128px));
-        images.add(r.getDrawable(R.drawable.bug_128px));
-        images.add(r.getDrawable(R.drawable.butterfly_128px));
-        images.add(r.getDrawable(R.drawable.camel_128px));
-        images.add(r.getDrawable(R.drawable.cat_128px));
-        images.add(r.getDrawable(R.drawable.cheetah_128px));
-        images.add(r.getDrawable(R.drawable.chicken_128px));
-        images.add(r.getDrawable(R.drawable.cow_128px));
-        images.add(r.getDrawable(R.drawable.crocodile_128px));
-        images.add(r.getDrawable(R.drawable.dinosaur_128px));
-        images.add(r.getDrawable(R.drawable.dog_128px));
-        images.add(r.getDrawable(R.drawable.dolphin_128px));
-        images.add(r.getDrawable(R.drawable.dove_128px));
-        images.add(r.getDrawable(R.drawable.duck_128px));
-        images.add(r.getDrawable(R.drawable.eagle_128px));
-        images.add(r.getDrawable(R.drawable.elephant_128px));
-        images.add(r.getDrawable(R.drawable.fish_128px));
-        images.add(r.getDrawable(R.drawable.flamingo_128px));
-        images.add(r.getDrawable(R.drawable.fox_128px));
-        images.add(r.getDrawable(R.drawable.frog_128px));
-        images.add(r.getDrawable(R.drawable.giraffe_128px));
-        images.add(r.getDrawable(R.drawable.gorilla_128px));
-        images.add(r.getDrawable(R.drawable.horse_128px));
-        images.add(r.getDrawable(R.drawable.kangoroo_128px));
-        images.add(r.getDrawable(R.drawable.leopard_128px));
-        images.add(r.getDrawable(R.drawable.lion_128px));
-        images.add(r.getDrawable(R.drawable.monkey_128px));
-        images.add(r.getDrawable(R.drawable.mouse_128px));
-        images.add(r.getDrawable(R.drawable.panda_128px));
-        images.add(r.getDrawable(R.drawable.parrot_128px));
-        images.add(r.getDrawable(R.drawable.penguin_128px));
-        images.add(r.getDrawable(R.drawable.shark_128px));
-        images.add(r.getDrawable(R.drawable.sheep_128px));
-        images.add(r.getDrawable(R.drawable.snake_128px));
-        images.add(r.getDrawable(R.drawable.spider_128px));
-        images.add(r.getDrawable(R.drawable.squirrel_128px));
-        images.add(r.getDrawable(R.drawable.starfish_128px));
-        images.add(r.getDrawable(R.drawable.tiger_128px));
-        images.add(r.getDrawable(R.drawable.turtle_128px));
-        images.add(r.getDrawable(R.drawable.wolf_128px));
-        images.add(r.getDrawable(R.drawable.zebra_128px));
-
-
-
-        Random rand = new Random(System.currentTimeMillis());
-        int index = rand.nextInt(images.size());
-        Drawable img1 = images.get(index);
-        images.remove(index);
-
-        index = rand.nextInt(images.size());
-        Drawable img2 = images.get(index);
-        images.remove(index);
-
-        index = rand.nextInt(images.size());
-        Drawable img3 = images.get(index);
-        images.remove(index);
-
-        index = rand.nextInt(images.size());
-        Drawable img4 = images.get(index);
-        images.remove(index);
-
-        index = rand.nextInt(images.size());
-        Drawable img5 = images.get(index);
-        images.remove(index);
-
-        index = rand.nextInt(images.size());
-        Drawable img6 = images.get(index);
-        images.remove(index);
-
-
-        selectedImages = new ArrayList<>();
-        selectedImages.add(img1);
-        selectedImages.add(img2);
-        selectedImages.add(img3);
-        selectedImages.add(img4);
-        selectedImages.add(img5);
-        selectedImages.add(img6);
-        selectedImages.add(img1);
-        selectedImages.add(img2);
-        selectedImages.add(img3);
-        selectedImages.add(img4);
-        selectedImages.add(img5);
-        selectedImages.add(img6);
-    }
-
+    // Initialize button listeners and images
     private void initButtons() {
-        Random rand = new Random(System.currentTimeMillis());
-        pairsFound = 0;
-
-        // Associate buttons with images
-        buttonImages = new HashMap<>();
-
         Button b00 = findViewById(R.id.c0r0);
         b00.setOnClickListener(new gridButtonClicked());
-        int index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b00, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b00);
 
 
         Button b10 = findViewById(R.id.c1r0);
         b10.setOnClickListener(new gridButtonClicked());
-        index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b10, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b10);
 
         Button b20 = findViewById(R.id.c2r0);
         b20.setOnClickListener(new gridButtonClicked());
-        index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b20, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b20);
 
         Button b01 = findViewById(R.id.c0r1);
         b01.setOnClickListener(new gridButtonClicked());
-        index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b01, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b01);
 
         Button b11 = findViewById(R.id.c1r1);
         b11.setOnClickListener(new gridButtonClicked());
-        index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b11, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b11);
 
         Button b21 = findViewById(R.id.c2r1);
         b21.setOnClickListener(new gridButtonClicked());
-        index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b21, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b21);
 
         Button b02 = findViewById(R.id.c0r2);
         b02.setOnClickListener(new gridButtonClicked());
-        index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b02, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b02);
 
         Button b12 = findViewById(R.id.c1r2);
         b12.setOnClickListener(new gridButtonClicked());
-        index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b12, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b12);
 
         Button b22 = findViewById(R.id.c2r2);
         b22.setOnClickListener(new gridButtonClicked());
-        index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b22, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b22);
 
         Button b03 = findViewById(R.id.c0r3);
         b03.setOnClickListener(new gridButtonClicked());
-        index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b03, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b03);
 
         Button b13 = findViewById(R.id.c1r3);
         b13.setOnClickListener(new gridButtonClicked());
-        index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b13, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b13);
 
         Button b23 = findViewById(R.id.c2r3);
         b23.setOnClickListener(new gridButtonClicked());
-        index = rand.nextInt(selectedImages.size());
-        buttonImages.put(b23, selectedImages.get(index));
-        selectedImages.remove(index);
+        memoryPuzzleModel.setButtonImage(b23);
     }
 }
