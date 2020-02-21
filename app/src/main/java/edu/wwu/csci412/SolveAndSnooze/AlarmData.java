@@ -31,7 +31,7 @@ public class AlarmData {
         setAM_PM(pref.getString(AM_PM, "AM"));
         setDays(pref.getString(DAYS,"M T W Th F"));
         setChallenges(pref.getInt(CHALLENGES,1));
-        setActive(pref.getBoolean(ACTIVE,true));
+        setActive(pref.getBoolean(ACTIVE,false));
     }
 
     /* set alarm time preferences */

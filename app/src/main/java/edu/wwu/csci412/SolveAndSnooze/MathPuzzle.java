@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +33,7 @@ public class MathPuzzle extends AppCompatActivity {
     private int[] operands = new int[6];
     private int[] answers = new int[3];
     private Operator[] operators = new Operator[3];
+    private MediaPlayer sound = MediaPlayer.create(this,R.raw.alarm);
 
     // \FIELDS
 
@@ -39,7 +41,8 @@ public class MathPuzzle extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         rand = new Random();
-
+        MediaPlayer sound = MediaPlayer.create(this, R.raw.alarm);
+        sound.start();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_math_solve);
 
@@ -180,6 +183,7 @@ public class MathPuzzle extends AppCompatActivity {
     }
 
     private void onSuccess(View v){
+        sound.stop();
         Intent intent = new Intent(v.getContext(), MainActivity.class);
         startActivityForResult(intent, 0);
     }
