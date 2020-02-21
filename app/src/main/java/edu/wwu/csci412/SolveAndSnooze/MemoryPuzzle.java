@@ -22,8 +22,7 @@ public class MemoryPuzzle extends AppCompatActivity {
     private Drawable firstImage;
     private Drawable secondImage;
     private boolean match; //keeps track of if last pair was a match
-    private MediaPlayer sound = MediaPlayer.create(this,R.raw.alarm);
-
+    private MediaPlayer sound;
     private MemoryPuzzleModel memoryPuzzleModel;
 
     @Override
@@ -36,13 +35,15 @@ public class MemoryPuzzle extends AppCompatActivity {
         solveButton.setOnClickListener(new solveButtonClicked());
 
         memoryPuzzleModel = new MemoryPuzzleModel(this);
+        sound = MediaPlayer.create(this,R.raw.alarm);
+        sound.setLooping(true);
+        sound.start();
         initButtons();
     }
 
     private class solveButtonClicked implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            sound.stop();
             Intent intent = new Intent(v.getContext(), MathPuzzle.class);
             startActivityForResult(intent, 0);
         }
@@ -84,6 +85,9 @@ public class MemoryPuzzle extends AppCompatActivity {
                     match = true;
                     memoryPuzzleModel.incrementPairsFound();
                     if (memoryPuzzleModel.getPairsFound() == 6) {
+                        sound.pause();
+                        sound.stop();
+                        sound.release();
                         Intent intent = new Intent(v.getContext(), MathPuzzle.class);
                         startActivityForResult(intent, 0);
                     }

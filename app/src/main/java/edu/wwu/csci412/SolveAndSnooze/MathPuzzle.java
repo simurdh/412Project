@@ -33,7 +33,7 @@ public class MathPuzzle extends AppCompatActivity {
     private int[] operands = new int[6];
     private int[] answers = new int[3];
     private Operator[] operators = new Operator[3];
-    private MediaPlayer sound = MediaPlayer.create(this,R.raw.alarm);
+    private MediaPlayer sound;
 
     // \FIELDS
 
@@ -58,6 +58,9 @@ public class MathPuzzle extends AppCompatActivity {
             }
         });
 
+        sound = MediaPlayer.create(this, R.raw.alarm);
+        sound.setLooping(true);
+        sound.start();
         generateQuestions();
         setQuesitions();
     }
@@ -183,7 +186,9 @@ public class MathPuzzle extends AppCompatActivity {
     }
 
     private void onSuccess(View v){
+        sound.pause();
         sound.stop();
+        sound.release();
         Intent intent = new Intent(v.getContext(), MainActivity.class);
         startActivityForResult(intent, 0);
     }
