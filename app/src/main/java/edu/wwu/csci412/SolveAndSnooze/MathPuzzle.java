@@ -41,7 +41,7 @@ public class MathPuzzle extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         rand = new Random();
-        MediaPlayer sound = MediaPlayer.create(this, R.raw.alarm);
+        sound = MediaPlayer.create(this, R.raw.alarm);
         sound.start();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_math_solve);

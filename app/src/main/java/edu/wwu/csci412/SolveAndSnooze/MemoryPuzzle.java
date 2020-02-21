@@ -24,7 +24,6 @@ public class MemoryPuzzle extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sound.start();
         super.onCreate(savedInstanceState);
 
         int width = Resources.getSystem().getDisplayMetrics().widthPixels / 3;
