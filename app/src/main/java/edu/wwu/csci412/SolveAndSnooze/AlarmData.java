@@ -24,6 +24,7 @@ public class AlarmData {
     private boolean active;
 
     /* instantiate alarm data */
+
     public AlarmData(Context context) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         setHour(pref.getInt(HOUR, 0));

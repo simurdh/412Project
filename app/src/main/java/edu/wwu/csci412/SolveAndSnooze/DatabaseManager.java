@@ -1,6 +1,7 @@
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -75,5 +76,32 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         db.execSQL(sqlUpdate);
         db.close();
+    }
+
+    public AlarmData selectById(int id){
+        String sqlQuery = "select * from " + ALARM_TABLE_NAME;
+        sqlQuery += " where " + ID + " = " + id;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(sqlQuery, null);
+
+        //this is where we instantiate AlarmData, but constructor needs to be fixed
+
+        db.close();
+
+        return null;
+    }
+
+    public AlarmData selectALl(int id){
+        String sqlQuery = "select * from " + ALARM_TABLE_NAME;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(sqlQuery, null);
+
+        //this is where we instantiate AlarmDatas, but constructor needs to be fixed
+
+        db.close();
+
+        return null;
     }
 }
