@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         //widgets used on screen
         Button editButton = findViewById(R.id.EditButton);
         Button challengeButton = findViewById(R.id.challengeButton);
+        Button sensorButton = findViewById(R.id.SensorChallenge);
         ImageButton addAlarm = findViewById(R.id.addAlarmButton);
         final CheckBox alarmCheckBox = findViewById(R.id.alarmCheckBox);
         MediaPlayer sound = MediaPlayer.create(this, R.raw.alarm);
@@ -93,6 +94,13 @@ public class MainActivity extends AppCompatActivity {
         challengeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), MemoryPuzzle.class);
+                startActivityForResult(intent, 0);
+            }
+        });
+
+        sensorButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), SensorData.class);
                 startActivityForResult(intent, 0);
             }
         });
