@@ -3,7 +3,7 @@ package edu.wwu.csci412.SolveAndSnooze;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,11 +19,12 @@ public class MemoryPuzzle extends AppCompatActivity {
     private ButtonGridView view;
 
     private boolean match; //keeps track of if last pair was a match
-
+    private MediaPlayer sound;
     private MemoryPuzzleModel memoryPuzzleModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sound.start();
         super.onCreate(savedInstanceState);
 
         int width = Resources.getSystem().getDisplayMetrics().widthPixels / 3;
@@ -37,6 +38,9 @@ public class MemoryPuzzle extends AppCompatActivity {
         }
 
         memoryPuzzleModel = new MemoryPuzzleModel(this);
+        sound = MediaPlayer.create(this,R.raw.alarm);
+        sound.setLooping(true);
+        sound.start();
         view = new ButtonGridView(this, width, offset, new gridButtonClicked(), memoryPuzzleModel);
         setContentView(view);
 
@@ -86,6 +90,9 @@ public class MemoryPuzzle extends AppCompatActivity {
                     match = true;
                     memoryPuzzleModel.incrementPairsFound();
                     if (memoryPuzzleModel.getPairsFound() == 6) {
+                        sound.pause();
+                        sound.stop();
+                        sound.release();
                         Intent intent = new Intent(v.getContext(), MathPuzzle.class);
                         startActivityForResult(intent, 0);
                     }
