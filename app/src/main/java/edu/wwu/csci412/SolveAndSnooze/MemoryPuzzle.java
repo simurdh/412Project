@@ -2,21 +2,13 @@ package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 
 public class MemoryPuzzle extends AppCompatActivity {
 
@@ -34,10 +26,8 @@ public class MemoryPuzzle extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Point size = new Point();
-        getWindowManager().getDefaultDisplay().getSize(size);
-        int width = size.x/3;
-        int height = size.y/5;
+        int width = Resources.getSystem().getDisplayMetrics().widthPixels / 3;
+        int height = Resources.getSystem().getDisplayMetrics().heightPixels / 5;
         int offset = 0; //used to center gridview
 
         // Choose the smaller of values for the button size, so they will always fit on the screen
