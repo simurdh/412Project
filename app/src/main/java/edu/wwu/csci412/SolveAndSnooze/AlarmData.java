@@ -3,6 +3,8 @@ package edu.wwu.csci412.SolveAndSnooze;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 
 
@@ -16,6 +18,7 @@ public class AlarmData {
     public static final String ACTIVE = "active";
 
     /* alarm variables */
+    private int id;
     private int hour;
     private int minutes;
     private String am_pm;
@@ -66,4 +69,27 @@ public class AlarmData {
 
     public void setActive(boolean active) {this.active = active;}
     public boolean getActive() {return this.active;}
+
+    public void setid(int id) {this.id = id;}
+    public int getid() {return this.id;}
+
+    public LinearLayout makeView(Context ctx){
+        /*
+        *
+        * */
+
+        LinearLayout AlarmFull = new LinearLayout(ctx);
+
+        LinearLayout.LayoutParams alarmFullParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        AlarmFull.setId(this.id);
+        AlarmFull.setLayoutParams(alarmFullParams);
+
+
+
+        return AlarmFull;
+    }
 }
