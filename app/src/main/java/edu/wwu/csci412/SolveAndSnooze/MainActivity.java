@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout alarmList = findViewById(R.id.AlarmList);
 
         alarmList.addView(alarmData.makeView(this));
+        alarmList.addView(alarmData.makeView(this));
 
         //Get hours & minutes from alarmData.
 //        StringBuilder timeString = new StringBuilder();

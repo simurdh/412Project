@@ -4,10 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.core.content.ContextCompat;
@@ -44,6 +48,19 @@ public class AlarmData {
         setDays(pref.getString(DAYS,"M T W Th F"));
         setChallenges(pref.getInt(CHALLENGES,1));
         setActive(pref.getBoolean(ACTIVE,false));
+    }
+
+    /* Secondary constructor for DB */
+
+    public AlarmData(int id, int hour, int minutes, String am_pm, String days, int challenges,
+                     boolean active){
+        this.id = id;
+        this.hour = hour;
+        this.minutes = minutes;
+        this.am_pm = am_pm;
+        this.days = days;
+        this.challenges = challenges;
+        this.active = active;
     }
 
     /* set alarm time preferences */
@@ -83,7 +100,7 @@ public class AlarmData {
 
     public LinearLayout makeView(Context ctx){
         /*
-        *
+        * Generates a view for an  alarm
         * */
 
         LinearLayout AlarmFull = new LinearLayout(ctx);
@@ -94,18 +111,86 @@ public class AlarmData {
         );
         AlarmFull.setBackgroundColor(ContextCompat.getColor(ctx, R.color.alarmBackground));
         AlarmFull.setId(this.id);
+        AlarmFull.setOrientation(LinearLayout.HORIZONTAL);
         AlarmFull.setLayoutParams(alarmFullParams);
 
         ImageView alarmIcon = new ImageView(ctx);
         AlarmFull.addView(alarmIcon);
-        ViewGroup.LayoutParams params = alarmIcon.getLayoutParams();
+        ViewGroup.LayoutParams iconParams = alarmIcon.getLayoutParams();
 
-        Log.i(TAG, params.toString());
-
-        params.height = ctx.getResources().getDimensionPixelSize(R.dimen.alarmIconHeight);
-        params.width = ctx.getResources().getDimensionPixelSize(R.dimen.alarmIconWidth);
+        iconParams.height = ctx.getResources().getDimensionPixelSize(R.dimen.alarmIconHeight);
+        iconParams.width = ctx.getResources().getDimensionPixelSize(R.dimen.alarmIconWidth);
         alarmIcon.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.alarm_clock));
 
+
+        LinearLayout timeDiv = new LinearLayout(ctx);
+
+        LinearLayout.LayoutParams timeDivParams = new LinearLayout.LayoutParams(
+                ctx.getResources().getDimensionPixelSize(R.dimen.timeDivWidth),
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        AlarmFull.addView(timeDiv);
+        timeDiv.setOrientation(LinearLayout.VERTICAL);
+        timeDiv.setLayoutParams(timeDivParams);
+
+        TextView timeView = new TextView(ctx);
+        timeDiv.addView(timeView);
+        ViewGroup.LayoutParams timeViewParams = timeView.getLayoutParams();
+
+        timeViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        timeViewParams.width = ctx.getResources().getDimensionPixelSize(R.dimen.timeTextWidth);
+        timeView.setText(this.getTimeString());
+        timeView.setPadding(ctx.getResources().getDimensionPixelSize(R.dimen.timeTextPaddingLeft),
+                0,0,0);
+
+
+        TextView daysView = new TextView(ctx);
+        timeDiv.addView(daysView);
+        ViewGroup.LayoutParams daysViewParams = daysView.getLayoutParams();
+
+        daysViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        daysViewParams.width = ctx.getResources().getDimensionPixelSize(R.dimen.daysTextWidth);
+        daysView.setText(this.days);
+        daysView.setPadding(ctx.getResources().getDimensionPixelSize(R.dimen.daysTextPaddingLeft),
+                0,0,0);
+
+        TextView numChallengesView = new TextView(ctx);
+        AlarmFull.addView(numChallengesView);
+        ViewGroup.LayoutParams numChallengesViewParams = numChallengesView.getLayoutParams();
+
+        numChallengesViewParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        numChallengesViewParams.width = ctx.getResources().getDimensionPixelSize(R.dimen.numChallengesWidth);
+        numChallengesView.setText(this.getNumChallengesString());
+        numChallengesView.setPadding(ctx.getResources().getDimensionPixelSize(R.dimen.numChallengesPaddingLeft),
+                ctx.getResources().getDimensionPixelSize(R.dimen.numChallengesPaddingTop),
+                0,0);
+
+        CheckBox armAlarm = new CheckBox(ctx);
+        armAlarm.setGravity(Gravity.CENTER);
+        AlarmFull.addView(armAlarm);
+        ViewGroup.LayoutParams armAlarmParams = armAlarm.getLayoutParams();
+
+        armAlarmParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        armAlarmParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+
         return AlarmFull;
+    }
+
+    private String getTimeString(){
+        String timeString = null;
+
+        if(this.minutes < 10){
+            timeString = String.format("%d:0%d", this.hour, this.minutes);
+        } else {
+            timeString = String.format("%d:%d", this.hour, this.minutes);
+        }
+
+        timeString += " " + am_pm;
+
+        return timeString;
+    }
+
+    private String getNumChallengesString(){
+        return String.format("%d challenges", this.challenges);
     }
 }
