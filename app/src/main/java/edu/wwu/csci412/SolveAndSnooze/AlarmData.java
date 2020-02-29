@@ -3,12 +3,20 @@ package edu.wwu.csci412.SolveAndSnooze;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 
+import androidx.core.content.ContextCompat;
+
 
 public class AlarmData {
+
+    private static final String TAG = "Alarm Data";
+
     /* preferences key value pairs */
     public static final String HOUR = "hour";
     public static final String MINUTES = "minutes";
@@ -84,11 +92,19 @@ public class AlarmData {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-
+        AlarmFull.setBackgroundColor(ContextCompat.getColor(ctx, R.color.alarmBackground));
         AlarmFull.setId(this.id);
         AlarmFull.setLayoutParams(alarmFullParams);
 
+        ImageView alarmIcon = new ImageView(ctx);
+        AlarmFull.addView(alarmIcon);
+        ViewGroup.LayoutParams params = alarmIcon.getLayoutParams();
 
+        Log.i(TAG, params.toString());
+
+        params.height = ctx.getResources().getDimensionPixelSize(R.dimen.alarmIconHeight);
+        params.width = ctx.getResources().getDimensionPixelSize(R.dimen.alarmIconWidth);
+        alarmIcon.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.alarm_clock));
 
         return AlarmFull;
     }
