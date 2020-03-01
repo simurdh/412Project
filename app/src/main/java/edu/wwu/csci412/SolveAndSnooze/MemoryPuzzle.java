@@ -27,7 +27,7 @@ public class MemoryPuzzle extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         int width = Resources.getSystem().getDisplayMetrics().widthPixels / 3;
-        int height = Resources.getSystem().getDisplayMetrics().heightPixels / 5;
+        int height = Resources.getSystem().getDisplayMetrics().heightPixels / 5 - getStatusBarHeight();
         int offset = 0; //used to center gridview
 
         // Choose the smaller of values for the button size, so they will always fit on the screen
@@ -105,5 +105,14 @@ public class MemoryPuzzle extends AppCompatActivity {
                 secondImage = null;
             }
         }
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }
