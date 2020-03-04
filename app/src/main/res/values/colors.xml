@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
     <color name="gray">#c0c0c0</color>
     <color name="teal">#008080</color>
+    <color name="alarmBackground">#1CE297</color>
 </resources>

@@ -2,6 +2,7 @@ package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -13,6 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 /* edit alarm screen controller */
 public class EditAlarm extends AppCompatActivity {
 
+    public boolean isNew;
+
+    private AlarmData currInstance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +25,8 @@ public class EditAlarm extends AppCompatActivity {
 
     }
     public void onStart() {
+        this.isNew = MainActivity.isNew;
+
         super.onStart();
         updateView();
     }
@@ -27,7 +34,15 @@ public class EditAlarm extends AppCompatActivity {
     public void updateView() {
         /* widgets on screen */
         Button saveButton = findViewById(R.id.saveButton);
-        final AlarmData alarmData = MainActivity.alarmData;
+        currInstance = null;
+
+        DatabaseManager db = new DatabaseManager(this);
+
+        if(this.isNew){
+            currInstance = new AlarmData();
+        } else {
+            currInstance = db.selectById(MainActivity.selectedID);
+        }
 
         /* set alarm data preferences and switch to main activity */
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -42,25 +57,27 @@ public class EditAlarm extends AppCompatActivity {
                 CheckBox sunday = findViewById(R.id.sundayCheckbox);
                 StringBuilder days = new StringBuilder();
 
+                DatabaseManager db = new DatabaseManager(EditAlarm.this);
+
                 //Get time from TimePicker
                 int hour = pickTime.getCurrentHour();
 
                 if(hour > 12)
                 {
-                    alarmData.setHour(hour-12);
-                    alarmData.setAM_PM("PM");
+                    EditAlarm.this.currInstance.setHour(hour-12);
+                    EditAlarm.this.currInstance.setAM_PM("PM");
                 }
                 else if (hour == 12)
                 {
-                    alarmData.setHour(hour);
-                    alarmData.setAM_PM("PM");
+                    EditAlarm.this.currInstance.setHour(hour);
+                    EditAlarm.this.currInstance.setAM_PM("PM");
                 }
                 else
                 {
-                    alarmData.setHour(hour);
-                    alarmData.setAM_PM("AM");
+                    EditAlarm.this.currInstance.setHour(hour);
+                    EditAlarm.this.currInstance.setAM_PM("AM");
                 }
-                alarmData.setMinutes(pickTime.getCurrentMinute());
+                EditAlarm.this.currInstance.setMinutes(pickTime.getCurrentMinute());
 
                 //Get days from CheckBoxes.
                 if (monday.isChecked())
@@ -77,12 +94,24 @@ public class EditAlarm extends AppCompatActivity {
                     days.append("Sa ");
                 if (sunday.isChecked())
                     days.append("Su");
-                alarmData.setDays(days.toString());
+                EditAlarm.this.currInstance.setDays(days.toString());
 
                 //Get challenge count.
                 SeekBar challenges = findViewById(R.id.seekBar);
-                alarmData.setChallenges(challenges.getProgress());
-                alarmData.setPreferences(EditAlarm.this);
+                EditAlarm.this.currInstance.setChallenges(challenges.getProgress());
+
+                if(EditAlarm.this.isNew){
+                    db.insert(EditAlarm.this.currInstance);
+                } else {
+                    db.updateById(EditAlarm.this.currInstance.getid(),
+                            EditAlarm.this.currInstance.getHour(),
+                            EditAlarm.this.currInstance.getMinutes(),
+                            EditAlarm.this.currInstance.getAM_PM(),
+                            EditAlarm.this.currInstance.getDays(),
+                            EditAlarm.this.currInstance.getChallenges(),
+                            Boolean.toString(EditAlarm.this.currInstance.getActive())
+                            );
+                }
 
                 Intent intent = new Intent(v.getContext(), MainActivity.class);
                 startActivityForResult(intent, 0);

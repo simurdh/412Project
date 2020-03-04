@@ -5,10 +5,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class DatabaseManager extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "alarmDB";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String ALARM_TABLE_NAME= "alarms";
     private static final String ID = "id";
@@ -29,7 +31,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqlCreate += " integer primary key autoincrement, " + HOUR;
         sqlCreate += " integer, " + MINUTES + " integer, ";
         sqlCreate += AM_PM + " text, " + DAYS + " text, ";
-        sqlCreate += CHALLENGES + " text, " + ACTIVE + "text)";
+        sqlCreate += CHALLENGES + " integer, " + ACTIVE + " text)";
         db.execSQL(sqlCreate);
     }
 
@@ -62,7 +64,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public void updateById(int id, int hour, int minutes, String amPm, String days,
-                           String challenges, String active){
+                           int challenges, String active){
         SQLiteDatabase db = this.getReadableDatabase();
 
         String sqlUpdate = "update " + ALARM_TABLE_NAME;
@@ -71,7 +73,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqlUpdate += AM_PM + " = '" + amPm +"', ";
         sqlUpdate += DAYS + " = '" + days +"', ";
         sqlUpdate += CHALLENGES + " = '" + challenges +"', ";
-        sqlUpdate += ACTIVE + " = '" + active +"' ";
+        sqlUpdate += ACTIVE + " = '" + active + "' ";
         sqlUpdate += "where " + ID + " = " + id;
 
         db.execSQL(sqlUpdate);
@@ -84,24 +86,45 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(sqlQuery, null);
+        AlarmData alarm = null;
 
-        //this is where we instantiate AlarmData, but constructor needs to be fixed
+        if(cursor.moveToFirst()){
+            alarm = new AlarmData(Integer.parseInt(cursor.getString(0)),
+                    Integer.parseInt(cursor.getString(1)),
+                    Integer.parseInt(cursor.getString(2)),
+                    cursor.getString(3),
+                    cursor.getString(4),
+                    Integer.parseInt(cursor.getString(5)),
+                    Boolean.parseBoolean(cursor.getString(6)));
+        }
 
         db.close();
 
-        return null;
+        return alarm;
     }
 
-    public AlarmData selectALl(int id){
+    public ArrayList<AlarmData> selectAll(){
         String sqlQuery = "select * from " + ALARM_TABLE_NAME;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(sqlQuery, null);
 
-        //this is where we instantiate AlarmDatas, but constructor needs to be fixed
+        ArrayList<AlarmData> alarms = new ArrayList<>();
+
+        while(cursor.moveToNext()){
+            AlarmData alarm = new AlarmData(Integer.parseInt(cursor.getString(0)),
+                    Integer.parseInt(cursor.getString(1)),
+                    Integer.parseInt(cursor.getString(2)),
+                    cursor.getString(3),
+                    cursor.getString(4),
+                    Integer.parseInt(cursor.getString(5)),
+                    Boolean.parseBoolean(cursor.getString(6)));
+
+            alarms.add(alarm);
+        }
 
         db.close();
 
-        return null;
+        return alarms;
     }
 }
