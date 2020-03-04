@@ -12,15 +12,13 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
-
+//detect sensor changes of accelerometer, update sprite on change
 public class SensorData extends Activity implements SensorEventListener {
 
     private SensorManager sensorManager;
 
     private static final String TAG = "SensorData";
     Sensor accelerometer;
-    private static int xAccelInitial = 0;
-    private static int yAccelInitial = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +41,9 @@ public class SensorData extends Activity implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        //Log.d(TAG, "onSensorChanged: X: " + event.values[0] + "Y: " + event.values[1] + "Z: " + event.values[2]);
-        //updateUser sprite location
+        //updateUser sprite location when screen tilts
+        int xAccelInitial = 0;
+        int yAccelInitial = 0;
         GameView.updateUser(xAccelInitial-event.values[0], yAccelInitial-event.values[1]);
     }
 }
