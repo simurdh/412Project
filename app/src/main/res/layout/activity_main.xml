@@ -23,12 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="59dp">
 
-            <Button
-                android:id="@+id/EditButton"
-                android:layout_width="62dp"
-                android:layout_height="match_parent"
-                android:text="Edit"/>
-
             <TextView
                 android:id="@+id/alarmTitle"
                 style="@style/mathSolveTitle"
@@ -42,7 +36,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="600dp">
+            android:layout_height="400dp">
             <LinearLayout
                 android:id="@+id/AlarmList"
                 android:layout_width="match_parent"

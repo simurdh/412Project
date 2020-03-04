@@ -125,6 +125,8 @@ public class AlarmData {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
+
+        alarmFullParams.topMargin = 30;
         AlarmFull.setBackgroundColor(ContextCompat.getColor(ctx, R.color.alarmBackground));
         AlarmFull.setId(this.id);
         AlarmFull.setOrientation(LinearLayout.HORIZONTAL);
