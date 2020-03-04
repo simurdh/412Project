@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationProvider;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private GeofencingClient gfClient;
     private List<Geofence> gfList;
     private PendingIntent geofencePendingIntent;
+    private LocationProvider locationProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         if (gfList == null) {
             gfList = new ArrayList<>();
         }
+
 
         gfClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent());
     }
