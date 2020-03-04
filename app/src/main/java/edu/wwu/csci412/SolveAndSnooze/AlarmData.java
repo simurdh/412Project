@@ -72,18 +72,22 @@ public class AlarmData {
         this.ctx = null;
     }
 
+    /* Tertiary constructor for new Alarms */
+
+    public AlarmData(){}
+
     /* set alarm time preferences */
-    public void setPreferences(Context context) {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putInt(HOUR, hour);
-        editor.putInt(MINUTES, minutes);
-        editor.putString(AM_PM, am_pm);
-        editor.putString(DAYS, days);
-        editor.putInt(CHALLENGES, challenges);
-        editor.putBoolean(ACTIVE,active);
-        editor.apply();
-    }
+//    public void setPreferences(Context context) {
+//        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+//        SharedPreferences.Editor editor = pref.edit();
+//        editor.putInt(HOUR, hour);
+//        editor.putInt(MINUTES, minutes);
+//        editor.putString(AM_PM, am_pm);
+//        editor.putString(DAYS, days);
+//        editor.putInt(CHALLENGES, challenges);
+//        editor.putBoolean(ACTIVE,active);
+//        editor.apply();
+//    }
 
     /* getters and setters for alarm data */
     public void setHour(int hour) { this.hour = hour; }
@@ -125,6 +129,16 @@ public class AlarmData {
         AlarmFull.setId(this.id);
         AlarmFull.setOrientation(LinearLayout.HORIZONTAL);
         AlarmFull.setLayoutParams(alarmFullParams);
+
+        AlarmFull.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.selectedID = AlarmData.this.id;
+                MainActivity.isNew = false;
+                Intent intent = new Intent(v.getContext(), EditAlarm.class);
+                AlarmData.this.ctx.startActivity(intent);
+            }
+        });
 
         ImageView alarmIcon = new ImageView(ctx);
         AlarmFull.addView(alarmIcon);

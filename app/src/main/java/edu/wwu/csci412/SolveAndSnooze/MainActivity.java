@@ -21,21 +21,19 @@ import android.widget.TimePicker;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 /* main activity screen controller */
 public class MainActivity extends AppCompatActivity {
     public static AlarmData alarmData;
+    public static boolean isNew;
+    public static int selectedID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AlarmData alarmData = new AlarmData(this);
         setContentView(R.layout.activity_main);
-
-        LinearLayout alarmList = findViewById(R.id.AlarmList);
-
-        alarmList.addView(alarmData.makeView(this));
-        alarmList.addView(alarmData.makeView(this));
 
         //Get hours & minutes from alarmData.
 //        StringBuilder timeString = new StringBuilder();
@@ -74,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateView() {
         //widgets used on screen
-        Button editButton = findViewById(R.id.EditButton);
+        //Button editButton = findViewById(R.id.EditButton);
         Button challengeButton = findViewById(R.id.challengeButton);
         Button sensorButton = findViewById(R.id.SensorChallenge);
         ImageButton addAlarm = findViewById(R.id.addAlarmButton);
@@ -82,16 +80,29 @@ public class MainActivity extends AppCompatActivity {
         MediaPlayer sound = MediaPlayer.create(this, R.raw.alarm);
         sound.stop();
 
+        LinearLayout alarmList = findViewById(R.id.AlarmList);
+
+        DatabaseManager db = new DatabaseManager(this);
+
+        ArrayList<AlarmData> dataList = db.selectAll();
+
+        //alarmList.addView(alarmData.makeView(this));
+
+        for(AlarmData alarm : dataList){
+            alarmList.addView(alarm.makeView(this));
+        }
+
         // listeners for widgets
-        editButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), EditAlarm.class);
-                startActivityForResult(intent, 0);
-            }
-        });
+//        editButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                Intent intent = new Intent(v.getContext(), EditAlarm.class);
+//                startActivityForResult(intent, 0);
+//            }
+//        });
 
         addAlarm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                MainActivity.isNew = true;
                 Intent intent = new Intent(v.getContext(), EditAlarm.class);
                 startActivityForResult(intent, 0);
             }
