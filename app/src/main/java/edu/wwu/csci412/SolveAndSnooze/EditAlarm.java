@@ -3,6 +3,7 @@ package edu.wwu.csci412.SolveAndSnooze;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 public class EditAlarm extends AppCompatActivity {
 
     public boolean isNew;
+
+    private static final String TAG = "EditAlarmActivity";
 
     private AlarmData currInstance;
 
@@ -34,15 +37,75 @@ public class EditAlarm extends AppCompatActivity {
     public void updateView() {
         /* widgets on screen */
         Button saveButton = findViewById(R.id.saveButton);
+        Button deleteButton = findViewById(R.id.deleteButton);
+
         currInstance = null;
 
         DatabaseManager db = new DatabaseManager(this);
 
         if(this.isNew){
             currInstance = new AlarmData();
+
+            deleteButton.setText("cancel");
         } else {
             currInstance = db.selectById(MainActivity.selectedID);
+            String infoString = String.format("isActive: %s", Boolean.toString(currInstance.getActive()));
+
+            Log.i(TAG, infoString);
+
+            TimePicker pickTime = findViewById(R.id.pickTime);
+            CheckBox monday = findViewById(R.id.mondayCheckbox);
+            CheckBox tuesday = findViewById(R.id.tuesdayCheckbox);
+            CheckBox wednesday = findViewById(R.id.wednesdayCheckbox);
+            CheckBox thursday = findViewById(R.id.thursdayCheckbox);
+            CheckBox friday = findViewById(R.id.fridayCheckbox);
+            CheckBox saturday = findViewById(R.id.saturdayCheckbox);
+            CheckBox sunday = findViewById(R.id.sundayCheckbox);
+            SeekBar challenges = findViewById(R.id.seekBar);
+
+            pickTime.setCurrentHour(currInstance.getHour());
+            pickTime.setCurrentMinute(currInstance.getMinutes());
+
+            String daysString = currInstance.getDays();
+            String[] days = daysString.split(" ");
+
+            for(int i = 0; i < days.length; i++)
+            {
+                if(days[i].equals("M"))
+                {
+                    monday.setChecked(true);
+                }
+                else if (days[i].equals("T"))
+                {
+                    tuesday.setChecked(true);
+                }
+                else if (days[i].equals("W"))
+                {
+                    wednesday.setChecked(true);
+                }
+                else if (days[i].equals("Th"))
+                {
+                    thursday.setChecked(true);
+                }
+                else if (days[i].equals("F"))
+                {
+                    friday.setChecked(true);
+                }
+                else if (days[i].equals("Sa"))
+                {
+                    saturday.setChecked(true);
+                }
+                else if (days[i].equals("Su"))
+                {
+                    sunday.setChecked(true);
+                }
+            }
+
+            challenges.setProgress(currInstance.getChallenges());
         }
+
+
+
 
         /* set alarm data preferences and switch to main activity */
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +180,20 @@ public class EditAlarm extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!EditAlarm.this.isNew){
+                    DatabaseManager db = new DatabaseManager(EditAlarm.this);
+                    db.deleteByID(EditAlarm.this.currInstance.getid());
+                }
+                Intent intent = new Intent(v.getContext(), MainActivity.class);
+                startActivityForResult(intent, 0);
+            }
+        });
     }
+
+
 
 }

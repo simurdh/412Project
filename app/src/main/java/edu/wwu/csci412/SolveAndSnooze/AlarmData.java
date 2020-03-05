@@ -197,6 +197,7 @@ public class AlarmData {
         this.armAlarm.setGravity(Gravity.CENTER);
         AlarmFull.addView(this.armAlarm);
         ViewGroup.LayoutParams armAlarmParams = this.armAlarm.getLayoutParams();
+        this.armAlarm.setChecked(this.active);
 
         this.armAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -274,6 +275,8 @@ public class AlarmData {
         String daysString = this.getDays();
         String[] days = daysString.split(" ");
 
+        DatabaseManager db = new DatabaseManager(this.ctx);
+
         for(int i = 0; i < days.length; i++)
         {
             if(days[i].equals("M"))
@@ -305,5 +308,14 @@ public class AlarmData {
                 setAlarm(Calendar.SUNDAY);
             }
         }
+
+        db.updateById(this.getid(),
+                this.getHour(),
+                this.getMinutes(),
+                this.getAM_PM(),
+                this.getDays(),
+                this.getChallenges(),
+                Boolean.toString(this.getActive())
+        );
     }
 }
