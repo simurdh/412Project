@@ -34,6 +34,8 @@ public class AlarmData {
     public static final String DAYS = "days";
     public static final String CHALLENGES = "challenges";
     public static final String ACTIVE = "active";
+    private static final String IN_RANGE = "inRange";
+
 
     /* alarm variables */
     private int id;
@@ -45,6 +47,7 @@ public class AlarmData {
     private boolean active;
     private Context ctx;
     private CheckBox armAlarm;
+    private boolean inRange; // if the user is in range of location enabled alarm. Will always be true if location is disabled
 
     /* instantiate alarm data */
 
@@ -56,12 +59,13 @@ public class AlarmData {
         setDays(pref.getString(DAYS,"M T W Th F"));
         setChallenges(pref.getInt(CHALLENGES,1));
         setActive(pref.getBoolean(ACTIVE,false));
+        setInRange(pref.getBoolean(IN_RANGE, true));
     }
 
     /* Secondary constructor for DB */
 
     public AlarmData(int id, int hour, int minutes, String am_pm, String days, int challenges,
-                     boolean active){
+                     boolean active, boolean inRange){
         this.id = id;
         this.hour = hour;
         this.minutes = minutes;
@@ -69,6 +73,7 @@ public class AlarmData {
         this.days = days;
         this.challenges = challenges;
         this.active = active;
+        this.inRange = inRange;
         this.ctx = null;
     }
 
@@ -110,6 +115,14 @@ public class AlarmData {
 
     public void setid(int id) {this.id = id;}
     public int getid() {return this.id;}
+
+    public String isInRange() {
+        return String.valueOf(inRange);
+    }
+
+    public void setInRange(boolean inRange) {
+        this.inRange = inRange;
+    }
 
     public LinearLayout makeView(Context ctx){
         /*
@@ -238,7 +251,7 @@ public class AlarmData {
         PendingIntent pendingIntent = PendingIntent.getActivity(activity, 0, intent, 0);
         AlarmManager am = (AlarmManager) this.ctx.getSystemService(Context.ALARM_SERVICE);
 
-        if(this.active) {
+        if(this.active && this.inRange) {
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.DAY_OF_WEEK, dayOfWeek);
             if(this.getAM_PM().equals("PM"))

@@ -20,6 +20,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String DAYS = "days";
     private static final String CHALLENGES = "challenges";
     private static final String ACTIVE = "active";
+    private static final String IN_RANGE = "inRange";
 
 
     public DatabaseManager(Context context){
@@ -31,7 +32,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqlCreate += " integer primary key autoincrement, " + HOUR;
         sqlCreate += " integer, " + MINUTES + " integer, ";
         sqlCreate += AM_PM + " text, " + DAYS + " text, ";
-        sqlCreate += CHALLENGES + " integer, " + ACTIVE + " text)";
+        sqlCreate += CHALLENGES + " integer, " + ACTIVE + " text, ";
+        sqlCreate += IN_RANGE + " text)";
         db.execSQL(sqlCreate);
     }
 
@@ -47,7 +49,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqlInsert += newAlarm.getMinutes() + ", '" + newAlarm.getAM_PM();
         sqlInsert += "', '" + newAlarm.getDays() + "', '";
         sqlInsert += newAlarm.getChallenges() + "', ";
-        sqlInsert += "'" + newAlarm.getActive() + "')";
+        sqlInsert += "'" + newAlarm.getActive() + "', ";
+        sqlInsert += "'" + newAlarm.isInRange() + "')";
 
         db.execSQL(sqlInsert);
         db.close();
@@ -64,7 +67,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public void updateById(int id, int hour, int minutes, String amPm, String days,
-                           int challenges, String active){
+                           int challenges, String active, String inRange){
         SQLiteDatabase db = this.getReadableDatabase();
 
         String sqlUpdate = "update " + ALARM_TABLE_NAME;
@@ -73,7 +76,20 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqlUpdate += AM_PM + " = '" + amPm +"', ";
         sqlUpdate += DAYS + " = '" + days +"', ";
         sqlUpdate += CHALLENGES + " = '" + challenges +"', ";
-        sqlUpdate += ACTIVE + " = '" + active + "' ";
+        sqlUpdate += ACTIVE + " = '" + active + "', ";
+        sqlUpdate += IN_RANGE + " = '" + inRange + "' ";
+        sqlUpdate += "where " + ID + " = " + id;
+
+        db.execSQL(sqlUpdate);
+        db.close();
+    }
+
+
+    public void updateInRangeById(int id, String inRange){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sqlUpdate = "update " + ALARM_TABLE_NAME;
+        sqlUpdate += " set " + IN_RANGE + " = '" + inRange + "' ";
         sqlUpdate += "where " + ID + " = " + id;
 
         db.execSQL(sqlUpdate);
@@ -95,7 +111,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
                     cursor.getString(3),
                     cursor.getString(4),
                     Integer.parseInt(cursor.getString(5)),
-                    Boolean.parseBoolean(cursor.getString(6)));
+                    Boolean.parseBoolean(cursor.getString(6)),
+                    Boolean.parseBoolean(cursor.getString(7)));
         }
 
         db.close();
@@ -118,7 +135,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
                     cursor.getString(3),
                     cursor.getString(4),
                     Integer.parseInt(cursor.getString(5)),
-                    Boolean.parseBoolean(cursor.getString(6)));
+                    Boolean.parseBoolean(cursor.getString(6)),
+                    Boolean.parseBoolean(cursor.getString(7)));
 
             alarms.add(alarm);
         }

@@ -10,9 +10,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Message;
+import android.provider.Settings;
 import android.view.View;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
@@ -37,37 +42,68 @@ import java.util.List;
 
 /* main activity screen controller */
 public class MainActivity extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_LOCATION = 0;
+
     public static AlarmData alarmData;
     public static boolean isNew;
     public static int selectedID;
-    private GeofencingClient gfClient;
-    private List<Geofence> gfList;
-    private PendingIntent geofencePendingIntent;
-    private LocationProvider locationProvider;
+    private AlarmLocation alarmLocation;
+    private DatabaseManager db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AlarmData alarmData = new AlarmData(this);
         setContentView(R.layout.activity_main);
-
-
-        // Set up geofence client
-        if (gfClient == null) {
-            gfClient = LocationServices.getGeofencingClient(this);
-        }
-
-        if (gfList == null) {
-            gfList = new ArrayList<>();
-        }
-
-
-        gfClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent());
+        alarmLocation = AlarmLocation.getInstance(this);
+        db = new DatabaseManager(this);
     }
 
     public void onStart() {
         super.onStart();
         updateView();
+
+        // verify location is enabled
+        boolean gpsEnabled = alarmLocation.locationServicesEnabled();
+        if (gpsEnabled == false) {
+            enableLocationSettings();
+        }
+
+        boolean permissionAccessCoarseLocationApproved =
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
+
+        if (permissionAccessCoarseLocationApproved) {
+            boolean permissionAccessFineLocationApproved =
+                    ActivityCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED;
+
+            if (permissionAccessFineLocationApproved) {
+
+            } else {
+                // App can only access location in the foreground. Display a dialog
+                // warning the user that your app must have all-the-time access to
+                // location in order to function properly. Then, request background
+                // location.
+                ActivityCompat.requestPermissions(this, new String[] {
+                                Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSION_REQUEST_LOCATION);
+            }
+        } else {
+            // App doesn't have access to the device's location at all. Make full request
+            // for permission.
+            ActivityCompat.requestPermissions(this, new String[] {
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                    },
+                    PERMISSION_REQUEST_LOCATION);
+        }
+    }
+
+    private void enableLocationSettings() {
+        Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(settingsIntent);
     }
 
     public void updateView() {
@@ -88,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
         //alarmList.addView(alarmData.makeView(this));
 
-        for(AlarmData alarm : dataList){
+        for (AlarmData alarm : dataList) {
             alarmList.addView(alarm.makeView(this));
         }
 
@@ -114,46 +150,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
-
-
     }
 
-
-
-    private GeofencingRequest getGeofencingRequest() {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(gfList);
-        return builder.build();
-    }
-
-    private PendingIntent getGeofencePendingIntent() {
-        // Reuse the PendingIntent if we already have it.
-        if (geofencePendingIntent != null) {
-            return geofencePendingIntent;
-        }
-        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
-        // calling addGeofences() and removeGeofences().
-        geofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.
-                FLAG_UPDATE_CURRENT);
-        return geofencePendingIntent;
-    }
-
-    // create a geofence with given id (Should match the id of corresponding alarm)
-    public Geofence createGeofence(String id) {
-        Geofence gf = new Geofence.Builder()
-                .setRequestId(id)
-
-                // Get the users location and set the region from it
-                .setCircularRegion()
-
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                Geofence.GEOFENCE_TRANSITION_EXIT)
-                .build();
-
-
-        gfList.add(gf);
-        return gf;
-    }
 }

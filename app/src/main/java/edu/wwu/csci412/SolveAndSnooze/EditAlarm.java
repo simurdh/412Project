@@ -6,7 +6,9 @@ import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -17,12 +19,13 @@ public class EditAlarm extends AppCompatActivity {
     public boolean isNew;
 
     private AlarmData currInstance;
+    private AlarmLocation alarmLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_alarm);
-
+        alarmLocation = AlarmLocation.getInstance(this);
     }
     public void onStart() {
         this.isNew = MainActivity.isNew;
@@ -43,6 +46,11 @@ public class EditAlarm extends AppCompatActivity {
         } else {
             currInstance = db.selectById(MainActivity.selectedID);
         }
+
+        /* location */
+        Switch locationEnabled = (Switch) findViewById(R.id.locationSwitch);
+        locationEnabled.setOnCheckedChangeListener(new LocationEnabledListener());
+
 
         /* set alarm data preferences and switch to main activity */
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +117,8 @@ public class EditAlarm extends AppCompatActivity {
                             EditAlarm.this.currInstance.getAM_PM(),
                             EditAlarm.this.currInstance.getDays(),
                             EditAlarm.this.currInstance.getChallenges(),
-                            Boolean.toString(EditAlarm.this.currInstance.getActive())
+                            Boolean.toString(EditAlarm.this.currInstance.getActive()),
+                            EditAlarm.this.currInstance.isInRange()
                             );
                 }
 
@@ -117,6 +126,21 @@ public class EditAlarm extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
+    }
+
+    private class LocationEnabledListener implements CompoundButton.OnCheckedChangeListener {
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            // if location is enabled, create a new geofence
+            if (isChecked) {
+                alarmLocation.createGeofence(String.valueOf(currInstance.getid()));
+
+            // if location is not enabled, destroy previous geofence if exists
+            } else {
+                alarmLocation.deleteGeofence(String.valueOf(currInstance.getid()));
+            }
+        }
     }
 
 }

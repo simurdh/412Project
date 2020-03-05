@@ -11,6 +11,9 @@ import com.google.android.gms.location.GeofencingEvent;
 import java.util.List;
 
 public class GeofenceBroadcastReceiver extends BroadcastReceiver {
+
+    private AlarmLocation alarmLocation;
+
     public void onReceive(Context context, Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError()) {
@@ -19,23 +22,23 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
             return;
         }
 
+        alarmLocation = AlarmLocation.getInstance(context);
+
         // Get the transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
 
-        // Get the geofences that were triggered. A single event can trigger
-        // multiple geofences.
+        // Get the geofences that were triggered (A single event can trigger multiple geofences)
         List<Geofence> triggeringGeofences;
+
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
             triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-
-            //Update alarms in database
-
+            alarmLocation.updateActiveAlarms(triggeringGeofences, "true");
 
         } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
             triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+            alarmLocation.updateActiveAlarms(triggeringGeofences, "false");
 
-            //Update alarms in database
-
+            // TODO: disable alarm
 
         } else {
                 // Log the error.
