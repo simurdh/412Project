@@ -21,6 +21,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String CHALLENGES = "challenges";
     private static final String ACTIVE = "active";
     private static final String IN_RANGE = "inRange";
+    private static final String HAS_GF = "hasGeofence";
 
 
     public DatabaseManager(Context context){
@@ -33,7 +34,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqlCreate += " integer, " + MINUTES + " integer, ";
         sqlCreate += AM_PM + " text, " + DAYS + " text, ";
         sqlCreate += CHALLENGES + " integer, " + ACTIVE + " text, ";
-        sqlCreate += IN_RANGE + " text)";
+        sqlCreate += IN_RANGE + " text, ";
+        sqlCreate += HAS_GF + " text)";
         db.execSQL(sqlCreate);
     }
 
@@ -42,7 +44,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insert(AlarmData newAlarm){
+    public Integer insert(AlarmData newAlarm){
         SQLiteDatabase db  = this.getReadableDatabase();
         String sqlInsert = "insert into " + ALARM_TABLE_NAME;
         sqlInsert += " values(null, " + newAlarm.getHour() + ", ";
@@ -50,10 +52,23 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqlInsert += "', '" + newAlarm.getDays() + "', '";
         sqlInsert += newAlarm.getChallenges() + "', ";
         sqlInsert += "'" + newAlarm.getActive() + "', ";
-        sqlInsert += "'" + newAlarm.isInRange() + "')";
+        sqlInsert += "'" + newAlarm.isInRange() + "', ";
+        sqlInsert += "'" + newAlarm.getHasGf() + "')";
 
         db.execSQL(sqlInsert);
+
+        // return the id of inserted alarm
+        String sqlQuery = "select * from " + ALARM_TABLE_NAME;
+        Cursor cursor = db.rawQuery(sqlQuery, null);
+
+        Integer id = 0;
+        while (cursor.moveToNext()) {
+            id = Integer.parseInt(cursor.getString(0));
+        }
+
         db.close();
+
+        return id;
     }
 
     public void deleteByID(int id){
@@ -67,7 +82,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public void updateById(int id, int hour, int minutes, String amPm, String days,
-                           int challenges, String active, String inRange){
+                           int challenges, String active, String inRange, String hasGf){
         SQLiteDatabase db = this.getReadableDatabase();
 
         String sqlUpdate = "update " + ALARM_TABLE_NAME;
@@ -77,7 +92,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqlUpdate += DAYS + " = '" + days +"', ";
         sqlUpdate += CHALLENGES + " = '" + challenges +"', ";
         sqlUpdate += ACTIVE + " = '" + active + "', ";
-        sqlUpdate += IN_RANGE + " = '" + inRange + "' ";
+        sqlUpdate += IN_RANGE + " = '" + inRange + "', ";
+        sqlUpdate += HAS_GF + " = '" + hasGf + "' ";
         sqlUpdate += "where " + ID + " = " + id;
 
         db.execSQL(sqlUpdate);
@@ -90,6 +106,17 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         String sqlUpdate = "update " + ALARM_TABLE_NAME;
         sqlUpdate += " set " + IN_RANGE + " = '" + inRange + "' ";
+        sqlUpdate += "where " + ID + " = " + id;
+
+        db.execSQL(sqlUpdate);
+        db.close();
+    }
+
+    public void updateHasGfById(int id, String hasGf){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sqlUpdate = "update " + ALARM_TABLE_NAME;
+        sqlUpdate += " set " + HAS_GF + " = '" + hasGf + "' ";
         sqlUpdate += "where " + ID + " = " + id;
 
         db.execSQL(sqlUpdate);
@@ -112,7 +139,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
                     cursor.getString(4),
                     Integer.parseInt(cursor.getString(5)),
                     Boolean.parseBoolean(cursor.getString(6)),
-                    Boolean.parseBoolean(cursor.getString(7)));
+                    Boolean.parseBoolean(cursor.getString(7)),
+                    Boolean.parseBoolean(cursor.getString(8)));
         }
 
         db.close();
@@ -136,7 +164,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
                     cursor.getString(4),
                     Integer.parseInt(cursor.getString(5)),
                     Boolean.parseBoolean(cursor.getString(6)),
-                    Boolean.parseBoolean(cursor.getString(7)));
+                    Boolean.parseBoolean(cursor.getString(7)),
+                    Boolean.parseBoolean(cursor.getString(8)));
 
             alarms.add(alarm);
         }

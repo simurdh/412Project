@@ -35,6 +35,7 @@ public class AlarmData {
     public static final String CHALLENGES = "challenges";
     public static final String ACTIVE = "active";
     private static final String IN_RANGE = "inRange";
+    private static final String HAS_GF = "hasGeofence";
 
 
     /* alarm variables */
@@ -48,6 +49,7 @@ public class AlarmData {
     private Context ctx;
     private CheckBox armAlarm;
     private boolean inRange; // if the user is in range of location enabled alarm. Will always be true if location is disabled
+    private boolean hasGf;
 
     /* instantiate alarm data */
 
@@ -60,12 +62,14 @@ public class AlarmData {
         setChallenges(pref.getInt(CHALLENGES,1));
         setActive(pref.getBoolean(ACTIVE,false));
         setInRange(pref.getBoolean(IN_RANGE, true));
+        setHasGf(pref.getBoolean(HAS_GF, false));
+
     }
 
     /* Secondary constructor for DB */
 
     public AlarmData(int id, int hour, int minutes, String am_pm, String days, int challenges,
-                     boolean active, boolean inRange){
+                     boolean active, boolean inRange, boolean hasGf){
         this.id = id;
         this.hour = hour;
         this.minutes = minutes;
@@ -74,6 +78,7 @@ public class AlarmData {
         this.challenges = challenges;
         this.active = active;
         this.inRange = inRange;
+        this.hasGf = hasGf;
         this.ctx = null;
     }
 
@@ -122,6 +127,14 @@ public class AlarmData {
 
     public void setInRange(boolean inRange) {
         this.inRange = inRange;
+    }
+
+    public String getHasGf() {
+        return String.valueOf(hasGf);
+    }
+
+    public void setHasGf(boolean hasGf) {
+        this.hasGf = hasGf;
     }
 
     public LinearLayout makeView(Context ctx){

@@ -20,6 +20,8 @@ public class EditAlarm extends AppCompatActivity {
 
     private AlarmData currInstance;
     private AlarmLocation alarmLocation;
+    private boolean createGf; // flag to tell whether to make a geofence
+    private boolean removeGf; // flag to tell whether to remove a geofence
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class EditAlarm extends AppCompatActivity {
 
         if(this.isNew){
             currInstance = new AlarmData();
+            createGf = false;
+            removeGf = false;
         } else {
             currInstance = db.selectById(MainActivity.selectedID);
         }
@@ -50,6 +54,13 @@ public class EditAlarm extends AppCompatActivity {
         /* location */
         final Switch locationEnabled = (Switch) findViewById(R.id.locationSwitch);
         locationEnabled.setOnCheckedChangeListener(new LocationEnabledListener());
+
+        // if location is enabled already, update switch
+        if (!EditAlarm.this.isNew) {
+            if (EditAlarm.this.currInstance.getHasGf().equals("true")) {
+                locationEnabled.setChecked(true);
+            }
+        }
 
 
         /* set alarm data preferences and switch to main activity */
@@ -119,7 +130,7 @@ public class EditAlarm extends AppCompatActivity {
                 }
 
                 if(EditAlarm.this.isNew){
-                    db.insert(EditAlarm.this.currInstance);
+                    EditAlarm.this.currInstance.setid(db.insert(EditAlarm.this.currInstance));
                 } else {
                     db.updateById(EditAlarm.this.currInstance.getid(),
                             EditAlarm.this.currInstance.getHour(),
@@ -128,8 +139,16 @@ public class EditAlarm extends AppCompatActivity {
                             EditAlarm.this.currInstance.getDays(),
                             EditAlarm.this.currInstance.getChallenges(),
                             Boolean.toString(EditAlarm.this.currInstance.getActive()),
-                            EditAlarm.this.currInstance.isInRange()
+                            EditAlarm.this.currInstance.isInRange(),
+                            EditAlarm.this.currInstance.getHasGf()
                             );
+                }
+
+                if (createGf) {
+                    alarmLocation.createGeofence(String.valueOf(currInstance.getid()));
+                } else if (removeGf) {
+                    alarmLocation.deleteGeofence(String.valueOf(currInstance.getid()));
+
                 }
 
                 Intent intent = new Intent(v.getContext(), MainActivity.class);
@@ -144,11 +163,15 @@ public class EditAlarm extends AppCompatActivity {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             // if location is enabled, create a new geofence
             if (isChecked) {
-                alarmLocation.createGeofence(String.valueOf(currInstance.getid()));
+                createGf = true;
+                removeGf = false;
 
             // if location is not enabled, destroy previous geofence if exists
             } else {
-                alarmLocation.deleteGeofence(String.valueOf(currInstance.getid()));
+                createGf = false;
+                if (currInstance.getHasGf().equals("true")) {
+                    removeGf = true;
+                }
             }
         }
     }

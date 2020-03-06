@@ -138,12 +138,17 @@ public class AlarmLocation {
 
         gfList.add(gf);
         gfClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent());
+
+        db.updateHasGfById(Integer.valueOf(id), "true");
         return gf;
     }
 
     // delete a geofence with given id
     public void deleteGeofence(String id) {
+        db.updateHasGfById(Integer.valueOf(id), "false");
+
     }
+
 
     public void updateActiveAlarms(List<Geofence> triggeringGeofences, String inRange) {
         for (Geofence gf : triggeringGeofences) {
