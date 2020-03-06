@@ -131,13 +131,15 @@ public class MainActivity extends AppCompatActivity {
         for(AlarmData alarm : dataList){
             alarmList.addView(makeView(alarm));
 
-            db.updateById(alarm.getid(),
-                    alarm.getHour(),
-                    alarm.getMinutes(),
-                    alarm.getAM_PM(),
-                    alarm.getDays(),
-                    alarm.getChallenges(),
-                    Boolean.toString(alarm.getActive())
+            db.updateById(alarmData.getid(),
+                    alarmData.getHour(),
+                    alarmData.getMinutes(),
+                    alarmData.getAM_PM(),
+                    alarmData.getDays(),
+                    alarmData.getChallenges(),
+                    Boolean.toString(alarmData.getActive()),
+                    alarmData.isInRange(),
+                    alarmData.getHasGf()
             );
 
             alarmSetup(alarm);
@@ -305,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
     armAlarmParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
 
     return AlarmFull;
-}
+
     }
 
     public void alarmSetup(AlarmData alarmData)
@@ -353,7 +355,9 @@ public class MainActivity extends AppCompatActivity {
                 alarmData.getAM_PM(),
                 alarmData.getDays(),
                 alarmData.getChallenges(),
-                Boolean.toString(alarmData.getActive())
+                Boolean.toString(alarmData.getActive()),
+                alarmData.isInRange(),
+                alarmData.getHasGf()
         );
     }
 

@@ -2,6 +2,7 @@ package edu.wwu.csci412.SolveAndSnooze;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class AlarmLocation {
@@ -154,7 +156,98 @@ public class AlarmLocation {
         for (Geofence gf : triggeringGeofences) {
             //Update alarms in database
             db.updateInRangeById(Integer.parseInt(gf.getRequestId()), inRange);
-            db.selectById(Integer.parseInt(gf.getRequestId())).alarmSetup(); //Enables or Cancels alarms since inRange will now be updated.
+            AlarmData alarm = db.selectById(Integer.parseInt(gf.getRequestId())); //Enables or Cancels alarms since inRange will now be updated.
+            alarmSetup(alarm);
+        }
+    }
+
+    public void alarmSetup(AlarmData alarmData)
+    {
+        String daysString = alarmData.getDays();
+        String[] days = daysString.split(" ");
+
+        DatabaseManager db = new DatabaseManager(context);
+
+        for(int i = 0; i < days.length; i++)
+        {
+            if(days[i].equals("M"))
+            {
+                setAlarms(Calendar.MONDAY, true, alarmData);
+            }
+            else if (days[i].equals("T"))
+            {
+                setAlarms(Calendar.TUESDAY, true, alarmData);
+            }
+            else if (days[i].equals("W"))
+            {
+                setAlarms(Calendar.WEDNESDAY, true, alarmData);
+            }
+            else if (days[i].equals("Th"))
+            {
+                setAlarms(Calendar.THURSDAY, true, alarmData);
+            }
+            else if (days[i].equals("F"))
+            {
+                setAlarms(Calendar.FRIDAY, true, alarmData);
+            }
+            else if (days[i].equals("Sa"))
+            {
+                setAlarms(Calendar.SATURDAY, true, alarmData);
+            }
+            else if (days[i].equals("Su"))
+            {
+                setAlarms(Calendar.SUNDAY, true, alarmData);
+            }
+        }
+
+        db.updateById(alarmData.getid(),
+                alarmData.getHour(),
+                alarmData.getMinutes(),
+                alarmData.getAM_PM(),
+                alarmData.getDays(),
+                alarmData.getChallenges(),
+                Boolean.toString(alarmData.getActive()),
+                alarmData.isInRange(),
+                alarmData.getHasGf()
+        );
+    }
+
+    public void setAlarms(int dayOfWeek, boolean active, AlarmData alarmData)
+    {
+        Intent intent = new Intent(context, MemoryPuzzle.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, alarmData.getid(), intent, 0);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        // enable alarm
+        if(active)
+        {
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+            if(alarmData.getAM_PM().equals("PM"))
+            {
+                cal.set(Calendar.HOUR_OF_DAY,alarmData.getHour()+12);
+            }
+            else
+            {
+                cal.set(Calendar.HOUR_OF_DAY,alarmData.getHour());
+            }
+            cal.set(Calendar.MINUTE,alarmData.getMinutes());
+            cal.set(Calendar.SECOND, 0);
+
+            //Check that day is not in the past. If so set for next same day of week.
+            if(cal.getTimeInMillis() < System.currentTimeMillis())
+            {
+                cal.add(Calendar.DAY_OF_YEAR,7);
+            }
+
+            alarmData.setActive(true);
+            am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+        }
+        else
+        {
+            //disable alarm
+            alarmData.setActive(false);
+            am.cancel(pendingIntent);
         }
     }
 }
