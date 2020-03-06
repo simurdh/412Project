@@ -193,7 +193,7 @@ public class EditAlarm extends AppCompatActivity {
                 }
 
                 if(EditAlarm.this.isNew){
-                    db.insert(EditAlarm.this.currInstance);
+                    EditAlarm.this.currInstance.setid(db.insert(EditAlarm.this.currInstance));
                 } else {
                     db.updateById(EditAlarm.this.currInstance.getid(),
                             EditAlarm.this.currInstance.getHour(),

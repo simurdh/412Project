@@ -47,7 +47,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_LOCATION = 0;
 
-    public static AlarmData alarmData;
     public static boolean isNew;
     public static int selectedID;
     private AlarmLocation alarmLocation;
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         Button challengeButton = findViewById(R.id.challengeButton);
         Button sensorButton = findViewById(R.id.SensorChallenge);
         ImageButton addAlarm = findViewById(R.id.addAlarmButton);
-        //CheckBox alarmCheckBox = findViewById(R.id.alarmCheckBox);
+        //final CheckBox alarmCheckBox = findViewById(R.id.alarmCheckBox);
         MediaPlayer sound = MediaPlayer.create(this, R.raw.alarm);
         sound.stop();
 
@@ -131,20 +130,19 @@ public class MainActivity extends AppCompatActivity {
         for(AlarmData alarm : dataList){
             alarmList.addView(makeView(alarm));
 
-            db.updateById(alarmData.getid(),
-                    alarmData.getHour(),
-                    alarmData.getMinutes(),
-                    alarmData.getAM_PM(),
-                    alarmData.getDays(),
-                    alarmData.getChallenges(),
-                    Boolean.toString(alarmData.getActive()),
-                    alarmData.isInRange(),
-                    alarmData.getHasGf()
+            db.updateById(alarm.getid(),
+                    alarm.getHour(),
+                    alarm.getMinutes(),
+                    alarm.getAM_PM(),
+                    alarm.getDays(),
+                    alarm.getChallenges(),
+                    Boolean.toString(alarm.getActive()),
+                    alarm.isInRange(),
+                    alarm.getHasGf()
             );
 
             alarmSetup(alarm);
         }
-
 
         addAlarm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
