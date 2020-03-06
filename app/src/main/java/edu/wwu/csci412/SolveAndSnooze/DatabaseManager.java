@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class DatabaseManager extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "alarmDB";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     private static final String ALARM_TABLE_NAME= "alarms";
     private static final String ID = "id";

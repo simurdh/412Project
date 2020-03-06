@@ -122,6 +122,10 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout alarmList = findViewById(R.id.AlarmList);
 
+        if(alarmList.getChildCount() > 0){
+            alarmList.removeAllViews();
+        }
+
         DatabaseManager db = new DatabaseManager(this);
 
         ArrayList<AlarmData> dataList = db.selectAll();
@@ -130,16 +134,16 @@ public class MainActivity extends AppCompatActivity {
         for(AlarmData alarm : dataList){
             alarmList.addView(makeView(alarm));
 
-            db.updateById(alarm.getid(),
-                    alarm.getHour(),
-                    alarm.getMinutes(),
-                    alarm.getAM_PM(),
-                    alarm.getDays(),
-                    alarm.getChallenges(),
-                    Boolean.toString(alarm.getActive()),
-                    alarm.isInRange(),
-                    alarm.getHasGf()
-            );
+//            db.updateById(alarm.getid(),
+//                    alarm.getHour(),
+//                    alarm.getMinutes(),
+//                    alarm.getAM_PM(),
+//                    alarm.getDays(),
+//                    alarm.getChallenges(),
+//                    Boolean.toString(alarm.getActive()),
+//                    alarm.isInRange(),
+//                    alarm.getHasGf()
+//            );
 
             alarmSetup(alarm);
         }
