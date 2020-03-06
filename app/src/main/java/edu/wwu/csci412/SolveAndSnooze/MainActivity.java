@@ -18,12 +18,15 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.Settings;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Switch;
@@ -124,10 +127,20 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<AlarmData> dataList = db.selectAll();
 
-        //alarmList.addView(alarmData.makeView(this));
 
-        for (AlarmData alarm : dataList) {
-            alarmList.addView(alarm.makeView(this));
+        for(AlarmData alarm : dataList){
+            alarmList.addView(makeView(alarm));
+
+            db.updateById(alarm.getid(),
+                    alarm.getHour(),
+                    alarm.getMinutes(),
+                    alarm.getAM_PM(),
+                    alarm.getDays(),
+                    alarm.getChallenges(),
+                    Boolean.toString(alarm.getActive())
+            );
+
+            alarmSetup(alarm);
         }
 
 
@@ -153,5 +166,196 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void setAlarms(int dayOfWeek, boolean active, AlarmData alarmData)
+    {
+        Intent intent = new Intent(MainActivity.this, MemoryPuzzle.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, alarmData.getid(), intent, 0);
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        // enable alarm
+        if(active)
+        {
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+            if(alarmData.getAM_PM().equals("PM"))
+            {
+                cal.set(Calendar.HOUR_OF_DAY,alarmData.getHour()+12);
+            }
+            else
+            {
+                cal.set(Calendar.HOUR_OF_DAY,alarmData.getHour());
+            }
+            cal.set(Calendar.MINUTE,alarmData.getMinutes());
+            cal.set(Calendar.SECOND, 0);
+
+            //Check that day is not in the past. If so set for next same day of week.
+            if(cal.getTimeInMillis() < System.currentTimeMillis())
+            {
+                cal.add(Calendar.DAY_OF_YEAR,7);
+            }
+
+            alarmData.setActive(true);
+            am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+        }
+        else
+        {
+            //disable alarm
+            alarmData.setActive(false);
+            am.cancel(pendingIntent);
+        }
+    }
+
+    public LinearLayout makeView(final AlarmData alarmData){
+    /*
+     * Generates a view for an  alarm bind alarm object to current
+     * context.
+     * */
+
+    LinearLayout AlarmFull = new LinearLayout(this);
+
+    LinearLayout.LayoutParams alarmFullParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+    );
+
+    alarmFullParams.topMargin = 30;
+    AlarmFull.setBackgroundColor(ContextCompat.getColor(this, R.color.alarmBackground));
+    AlarmFull.setId(alarmData.getid());
+    AlarmFull.setOrientation(LinearLayout.HORIZONTAL);
+    AlarmFull.setLayoutParams(alarmFullParams);
+
+    AlarmFull.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            MainActivity.selectedID = alarmData.getid();
+            MainActivity.isNew = false;
+            Intent intent = new Intent(v.getContext(), EditAlarm.class);
+            startActivity(intent);
+        }
+    });
+
+    ImageView alarmIcon = new ImageView(this);
+    AlarmFull.addView(alarmIcon);
+    ViewGroup.LayoutParams iconParams = alarmIcon.getLayoutParams();
+
+    iconParams.height = this.getResources().getDimensionPixelSize(R.dimen.alarmIconHeight);
+    iconParams.width = this.getResources().getDimensionPixelSize(R.dimen.alarmIconWidth);
+    alarmIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.alarm_clock));
+
+
+    LinearLayout timeDiv = new LinearLayout(this);
+
+    LinearLayout.LayoutParams timeDivParams = new LinearLayout.LayoutParams(
+            this.getResources().getDimensionPixelSize(R.dimen.timeDivWidth),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+    );
+    AlarmFull.addView(timeDiv);
+    timeDiv.setOrientation(LinearLayout.VERTICAL);
+    timeDiv.setLayoutParams(timeDivParams);
+
+    TextView timeView = new TextView(this);
+    timeDiv.addView(timeView);
+    ViewGroup.LayoutParams timeViewParams = timeView.getLayoutParams();
+
+    timeViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+    timeViewParams.width = this.getResources().getDimensionPixelSize(R.dimen.timeTextWidth);
+    timeView.setText(alarmData.getTimeString());
+    timeView.setPadding(this.getResources().getDimensionPixelSize(R.dimen.timeTextPaddingLeft),
+            0,0,0);
+
+
+    TextView daysView = new TextView(this);
+    timeDiv.addView(daysView);
+    ViewGroup.LayoutParams daysViewParams = daysView.getLayoutParams();
+
+    daysViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+    daysViewParams.width = this.getResources().getDimensionPixelSize(R.dimen.daysTextWidth);
+    daysView.setText(alarmData.getDays());
+    daysView.setPadding(this.getResources().getDimensionPixelSize(R.dimen.daysTextPaddingLeft),
+            0,0,0);
+
+    TextView numChallengesView = new TextView(this);
+    AlarmFull.addView(numChallengesView);
+    ViewGroup.LayoutParams numChallengesViewParams = numChallengesView.getLayoutParams();
+
+    numChallengesViewParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+    numChallengesViewParams.width = this.getResources().getDimensionPixelSize(R.dimen.numChallengesWidth);
+    numChallengesView.setText(alarmData.getNumChallengesString());
+    numChallengesView.setPadding(this.getResources().getDimensionPixelSize(R.dimen.numChallengesPaddingLeft),
+            this.getResources().getDimensionPixelSize(R.dimen.numChallengesPaddingTop),
+            0,0);
+
+    CheckBox armAlarm = new CheckBox(this);
+    armAlarm.setGravity(Gravity.CENTER);
+    AlarmFull.addView(armAlarm);
+    ViewGroup.LayoutParams armAlarmParams = armAlarm.getLayoutParams();
+    armAlarm.setChecked(alarmData.getActive());
+
+    armAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            alarmData.setActive(isChecked);
+            alarmSetup(alarmData);
+        }
+    });
+
+
+    armAlarmParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+    armAlarmParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+    return AlarmFull;
+}
+    }
+
+    public void alarmSetup(AlarmData alarmData)
+    {
+        String daysString = alarmData.getDays();
+        String[] days = daysString.split(" ");
+
+        DatabaseManager db = new DatabaseManager(this);
+
+        for(int i = 0; i < days.length; i++)
+        {
+            if(days[i].equals("M"))
+            {
+                setAlarms(Calendar.MONDAY, true, alarmData);
+            }
+            else if (days[i].equals("T"))
+            {
+                setAlarms(Calendar.TUESDAY, true, alarmData);
+            }
+            else if (days[i].equals("W"))
+            {
+                setAlarms(Calendar.WEDNESDAY, true, alarmData);
+            }
+            else if (days[i].equals("Th"))
+            {
+                setAlarms(Calendar.THURSDAY, true, alarmData);
+            }
+            else if (days[i].equals("F"))
+            {
+                setAlarms(Calendar.FRIDAY, true, alarmData);
+            }
+            else if (days[i].equals("Sa"))
+            {
+                setAlarms(Calendar.SATURDAY, true, alarmData);
+            }
+            else if (days[i].equals("Su"))
+            {
+                setAlarms(Calendar.SUNDAY, true, alarmData);
+            }
+        }
+
+        db.updateById(alarmData.getid(),
+                alarmData.getHour(),
+                alarmData.getMinutes(),
+                alarmData.getAM_PM(),
+                alarmData.getDays(),
+                alarmData.getChallenges(),
+                Boolean.toString(alarmData.getActive())
+        );
+    }
+
 
 }
