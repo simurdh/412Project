@@ -63,7 +63,6 @@ public class AlarmLocation {
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         locationProvider = locationManager.getProvider(LocationManager.GPS_PROVIDER);
-        gfClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent());
 
         listener = new LocationListener() {
 
@@ -124,8 +123,10 @@ public class AlarmLocation {
         }
 
         Geofence gf = new Geofence.Builder()
+                //Set ID
                 .setRequestId(id)
-
+                //Set expiration
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 // Get the users location and set the region from it
                 .setCircularRegion(currentLocation.getLatitude(), currentLocation.getLongitude(), GEOFENCE_RADIUS)
 
@@ -148,6 +149,7 @@ public class AlarmLocation {
         for (Geofence gf : triggeringGeofences) {
             //Update alarms in database
             db.updateInRangeById(Integer.parseInt(gf.getRequestId()), inRange);
+            db.selectById(Integer.parseInt(gf.getRequestId())).alarmSetup(); //Enables or Cancels alarms since inRange will now be updated.
         }
     }
 }

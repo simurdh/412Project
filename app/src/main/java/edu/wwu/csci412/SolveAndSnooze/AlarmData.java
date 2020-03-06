@@ -272,11 +272,14 @@ public class AlarmData {
             }
 
             this.setActive(true);
+            System.out.println("ALARM SET!");
             am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
         }
         else
         {
             //disable alarm
+            System.out.println("ALARM DISABLED");
+            System.out.println("Active: "+this.getActive()+" inRange: "+this.inRange);
             this.setActive(false);
             am.cancel(pendingIntent);
         }

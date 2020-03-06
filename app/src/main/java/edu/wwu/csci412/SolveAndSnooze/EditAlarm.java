@@ -48,7 +48,7 @@ public class EditAlarm extends AppCompatActivity {
         }
 
         /* location */
-        Switch locationEnabled = (Switch) findViewById(R.id.locationSwitch);
+        final Switch locationEnabled = (Switch) findViewById(R.id.locationSwitch);
         locationEnabled.setOnCheckedChangeListener(new LocationEnabledListener());
 
 
@@ -107,6 +107,16 @@ public class EditAlarm extends AppCompatActivity {
                 //Get challenge count.
                 SeekBar challenges = findViewById(R.id.seekBar);
                 EditAlarm.this.currInstance.setChallenges(challenges.getProgress());
+
+                //Get gps setting.
+                if(locationEnabled.isChecked())
+                {
+                    EditAlarm.this.currInstance.setInRange(true);
+                }
+                else
+                {
+                    EditAlarm.this.currInstance.setInRange(true);
+                }
 
                 if(EditAlarm.this.isNew){
                     db.insert(EditAlarm.this.currInstance);

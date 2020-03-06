@@ -33,12 +33,12 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
             triggeringGeofences = geofencingEvent.getTriggeringGeofences();
             alarmLocation.updateActiveAlarms(triggeringGeofences, "true");
+            System.out.println("ENTERED!");
 
         } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
             triggeringGeofences = geofencingEvent.getTriggeringGeofences();
             alarmLocation.updateActiveAlarms(triggeringGeofences, "false");
-
-            // TODO: disable alarm
+            System.out.println("EXITED!");
 
         } else {
                 // Log the error.
