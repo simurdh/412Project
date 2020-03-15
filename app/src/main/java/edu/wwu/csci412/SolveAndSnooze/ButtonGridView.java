@@ -1,3 +1,6 @@
+/**
+ * View class for setting up a grid of buttons
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Context;

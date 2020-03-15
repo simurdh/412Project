@@ -120,14 +120,6 @@ public class MainActivity extends AppCompatActivity {
             alarmList.addView(makeView(alarm));
             alarmSetup(alarm);
         }
-
-//        addAlarm.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                MainActivity.isNew = true;
-//                Intent intent = new Intent(v.getContext(), EditAlarm.class);
-//                startActivityForResult(intent, 0);
-//            }
-//        });
     }
 
     public void setAlarms(int dayOfWeek, boolean active, AlarmData alarmData)
@@ -336,11 +328,13 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        // user wants to create alarm-- navigate to edit alarm screen
         if (id == R.id.addAlarmButton) {
             MainActivity.isNew = true;
             Intent intent = new Intent(this, EditAlarm.class);
             startActivityForResult(intent, 0);
 
+        // show help page
         } else if (id == R.id.action_help) {
             Intent intent = new Intent(this, HelpActivity.class);
             startActivityForResult(intent, 0);
@@ -348,6 +342,4 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 }

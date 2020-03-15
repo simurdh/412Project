@@ -1,3 +1,7 @@
+/**
+ * View for sensor puzzle
+ */
+
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Context;

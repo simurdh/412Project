@@ -1,3 +1,7 @@
+/**
+ * Math puzzle
+ */
+
 package edu.wwu.csci412.SolveAndSnooze;
 
 import androidx.appcompat.app.AppCompatActivity;

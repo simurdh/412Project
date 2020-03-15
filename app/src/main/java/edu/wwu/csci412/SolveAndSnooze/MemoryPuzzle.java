@@ -1,3 +1,6 @@
+/**
+ * Memory puzzle controller class
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Intent;

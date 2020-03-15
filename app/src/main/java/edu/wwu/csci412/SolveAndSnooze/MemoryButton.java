@@ -1,3 +1,6 @@
+/**
+ * Button for the memory puzzle
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Context;

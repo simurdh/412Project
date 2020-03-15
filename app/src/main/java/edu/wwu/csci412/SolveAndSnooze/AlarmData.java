@@ -1,3 +1,7 @@
+/**
+ * Store information about an alarm
+ */
+
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.app.AlarmManager;
@@ -6,19 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.TimePicker;
-
-import androidx.core.content.ContextCompat;
 
 import java.util.Calendar;
 
@@ -125,8 +117,6 @@ public class AlarmData {
     }
 
 
-
-
     public String getTimeString(){
         String timeString = null;
 
@@ -145,6 +135,10 @@ public class AlarmData {
         return String.format("%d challenges", this.challenges);
     }
 
+    /**
+     * activate the alarm
+     * @param dayOfWeek day the alarm will sound
+     */
     public void setAlarm(int dayOfWeek){
         MainActivity activity = (MainActivity) this.ctx;
 
