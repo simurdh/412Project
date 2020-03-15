@@ -1,5 +1,24 @@
 <resources>
-    <string name="app_name">TestApp</string>
+    <string name="app_name">Solve \u0026 Snooze</string>
     <string name="edit">Edit</string>
     <string name="title">Solve!</string>
+    <string name="challenge">challenge</string>
+    <string name="help_title">Help</string>
+    <string name="done">done</string>
+    <string name="add_alarm_title">Adding an Alarm</string>
+    <string name="add_alarm_info">To add an alarm, select the plus sign from the menu bar on the main screen.
+        This will bring you to a page where you can select the time, days, challenges, and whether it is a location based alarm</string>
+    <string name="delete_alarm_title">Deleting an Alarm</string>
+    <string name="delete_alarm_info">To delete an alarm, select the alarm from the main page.
+        This will bring you to the edit alarm page.
+        There is a delete button on the bottom left</string>
+    <string name="puzzles_title">Puzzles</string>
+    <string name="puzzles_info">There are three possible puzzles: a memory puzzle, math puzzle, and tilt puzzle.
+        The memory puzzle works by clicking on squares and matching images, until all images are matched.
+        The math puzzle is solved by putting in answers on the line next to the equation. Answers may be negative.
+        The tilt puzzle is solved when the fox passes over all the mice. The fox moves left or right when the screen is tilted. </string>
+
+    <string name="location_title">Location</string>
+    <string name="location_info">When selecting location while editing or creating an alarm, the app will use your current location to set up a 100 meter radius.
+        The alarm will only sound if you are in this radius. Every time you unselect and reselect the location option, it will use the current location for the radius.</string>
 </resources>

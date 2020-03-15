@@ -1,6 +1,7 @@
 package edu.wwu.csci412.SolveAndSnooze;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -10,38 +11,22 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Message;
 import android.provider.Settings;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.ScaleAnimation;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Switch;
-import android.widget.TimePicker;
-
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingClient;
-import com.google.android.gms.location.GeofencingRequest;
-import com.google.android.gms.location.LocationServices;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 /* main activity screen controller */
 public class MainActivity extends AppCompatActivity {
@@ -60,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},1);
         AlarmData alarmData = new AlarmData(this);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         alarmLocation = AlarmLocation.getInstance(this);
         db = new DatabaseManager(this);
     }
@@ -113,9 +100,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateView() {
         //widgets used on screen
         //Button editButton = findViewById(R.id.EditButton);
-        Button challengeButton = findViewById(R.id.challengeButton);
-        Button sensorButton = findViewById(R.id.SensorChallenge);
-        ImageButton addAlarm = findViewById(R.id.addAlarmButton);
+//        ImageButton addAlarm = findViewById(R.id.addAlarmButton);
         //final CheckBox alarmCheckBox = findViewById(R.id.alarmCheckBox);
         MediaPlayer sound = MediaPlayer.create(this, R.raw.alarm);
         sound.stop();
@@ -133,42 +118,16 @@ public class MainActivity extends AppCompatActivity {
 
         for(AlarmData alarm : dataList){
             alarmList.addView(makeView(alarm));
-
-//            db.updateById(alarm.getid(),
-//                    alarm.getHour(),
-//                    alarm.getMinutes(),
-//                    alarm.getAM_PM(),
-//                    alarm.getDays(),
-//                    alarm.getChallenges(),
-//                    Boolean.toString(alarm.getActive()),
-//                    alarm.isInRange(),
-//                    alarm.getHasGf()
-//            );
-
             alarmSetup(alarm);
         }
 
-        addAlarm.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                MainActivity.isNew = true;
-                Intent intent = new Intent(v.getContext(), EditAlarm.class);
-                startActivityForResult(intent, 0);
-            }
-        });
-
-        challengeButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MemoryPuzzle.class);
-                startActivityForResult(intent, 0);
-            }
-        });
-
-        sensorButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), SensorData.class);
-                startActivityForResult(intent, 0);
-            }
-        });
+//        addAlarm.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                MainActivity.isNew = true;
+//                Intent intent = new Intent(v.getContext(), EditAlarm.class);
+//                startActivityForResult(intent, 0);
+//            }
+//        });
     }
 
     public void setAlarms(int dayOfWeek, boolean active, AlarmData alarmData)
@@ -361,6 +320,33 @@ public class MainActivity extends AppCompatActivity {
                 alarmData.isInRange(),
                 alarmData.getHasGf()
         );
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.addAlarmButton) {
+            MainActivity.isNew = true;
+            Intent intent = new Intent(this, EditAlarm.class);
+            startActivityForResult(intent, 0);
+
+        } else if (id == R.id.action_help) {
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivityForResult(intent, 0);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 

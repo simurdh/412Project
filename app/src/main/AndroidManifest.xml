@@ -12,11 +12,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".MathPuzzle"></activity>
         <activity android:name=".SensorData"
             android:screenOrientation="portrait"></activity>
         <activity android:name="EditAlarm"></activity>
+        <activity android:name=".HelpActivity"></activity>
         <activity android:name=".MemoryPuzzle"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
