@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},1);
+        //ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        //ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},1);
         AlarmData alarmData = new AlarmData(this);
         setContentView(R.layout.activity_main);
-        alarmLocation = AlarmLocation.getInstance(this);
+        //alarmLocation = AlarmLocation.getInstance(this);
         db = new DatabaseManager(this);
     }
 
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         updateView();
 
         // verify location is enabled
-        boolean gpsEnabled = alarmLocation.locationServicesEnabled();
+        /*boolean gpsEnabled = alarmLocation.locationServicesEnabled();
         if (gpsEnabled == false) {
             enableLocationSettings();
         }
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                             Manifest.permission.ACCESS_COARSE_LOCATION,
                     },
                     PERMISSION_REQUEST_LOCATION);
-        }
+        }*/
     }
 
     private void enableLocationSettings() {
