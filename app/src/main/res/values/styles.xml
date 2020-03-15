@@ -8,6 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name ="mathQuestionText" parent="@android:style/TextAppearance">
         <item name="android:gravity">center</item>
         <item name="android:textSize">15pt</item>
@@ -17,4 +22,9 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">20pt</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>
