@@ -17,6 +17,7 @@
         <activity android:name=".SensorData"
             android:screenOrientation="portrait"></activity>
         <activity android:name="EditAlarm"></activity>
+        <activity android:name=".HelpActivity"></activity>
         <activity android:name=".MemoryPuzzle"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>

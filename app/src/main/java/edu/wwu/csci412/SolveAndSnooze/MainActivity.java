@@ -336,6 +336,15 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == R.id.addAlarmButton) {
+            MainActivity.isNew = true;
+            Intent intent = new Intent(this, EditAlarm.class);
+            startActivityForResult(intent, 0);
+
+        } else if (id == R.id.action_help) {
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivityForResult(intent, 0);
+        }
 
         return super.onOptionsItemSelected(item);
     }
