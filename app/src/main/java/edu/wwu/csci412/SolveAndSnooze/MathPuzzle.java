@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.media.AudioManager;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -59,11 +60,9 @@ public class MathPuzzle extends AppCompatActivity {
             }
         });
 
-        sound = MediaPlayer.create(this, R.raw.alarm);
-        sound.setLooping(true);
-        sound.setVolume(100,100);
-        sound.start();
+        setupAudio();
         generateQuestions();
+
         setQuesitions();
     }
 
@@ -274,5 +273,21 @@ public class MathPuzzle extends AppCompatActivity {
 
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public void setupAudio()
+    {
+        AudioManager sysAudio;
+        sysAudio=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_MUSIC, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_RING, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_ALARM, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_SYSTEM, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+
+        sound = MediaPlayer.create(this,R.raw.alarm);
+        sound.setLooping(true);
+        sound.setVolume(100,100);
+        sound.start();
     }
 }

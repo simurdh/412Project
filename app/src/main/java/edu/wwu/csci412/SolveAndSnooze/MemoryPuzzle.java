@@ -3,6 +3,7 @@ package edu.wwu.csci412.SolveAndSnooze;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -53,10 +54,7 @@ public class MemoryPuzzle extends AppCompatActivity {
         }
 
         memoryPuzzleModel = new MemoryPuzzleModel(this);
-        sound = MediaPlayer.create(this,R.raw.alarm);
-        sound.setLooping(true);
-        sound.setVolume(100,100);
-        sound.start();
+        setupAudio();
         view = new ButtonGridView(this, width, offset, new gridButtonClicked(), memoryPuzzleModel);
         setContentView(view);
 
@@ -187,5 +185,21 @@ public class MemoryPuzzle extends AppCompatActivity {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public void setupAudio()
+    {
+        AudioManager sysAudio;
+        sysAudio=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_MUSIC, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_RING, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_ALARM, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_SYSTEM, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+
+        sound = MediaPlayer.create(this,R.raw.alarm);
+        sound.setLooping(true);
+        sound.setVolume(100,100);
+        sound.start();
     }
 }

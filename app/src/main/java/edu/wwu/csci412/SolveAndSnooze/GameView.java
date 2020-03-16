@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.Surface;
@@ -91,6 +92,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         userSprite = new CharacterSprite(BitmapFactory.decodeResource(getResources(), R.drawable.fox_64px), screenWidth/2, screenHeight/2);
 
         Context context = getContext();
+
         sound = MediaPlayer.create(context, R.raw.alarm);
         sound.setLooping(true);
         sound.setVolume(100,100);
