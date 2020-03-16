@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(alarmData.getChallenges() == 0 || validIntents.size() == 0)
         {
-            selectedIntent = new Intent(MainActivity.this, MainActivity.class);
+            selectedIntent = new Intent(MainActivity.this, BasicPuzzle.class);
         }
         else
         {
