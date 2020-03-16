@@ -39,8 +39,10 @@ public class MemoryPuzzle extends AppCompatActivity {
             width = height;
         }
 
+        SoundManager soundSelection = SoundManager.getInstance(this);
+
         memoryPuzzleModel = new MemoryPuzzleModel(this);
-        sound = MediaPlayer.create(this,R.raw.alarm);
+        sound = MediaPlayer.create(this,soundSelection.currSound);
         sound.setLooping(true);
         sound.start();
         view = new ButtonGridView(this, width, offset, new gridButtonClicked(), memoryPuzzleModel);

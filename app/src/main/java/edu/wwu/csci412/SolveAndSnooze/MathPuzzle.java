@@ -60,7 +60,9 @@ public class MathPuzzle extends AppCompatActivity {
             }
         });
 
-        sound = MediaPlayer.create(this, R.raw.alarm);
+        SoundManager soundSelection = SoundManager.getInstance(this);
+
+        sound = MediaPlayer.create(this, soundSelection.currSound);
         sound.setLooping(true);
         sound.start();
         generateQuestions();

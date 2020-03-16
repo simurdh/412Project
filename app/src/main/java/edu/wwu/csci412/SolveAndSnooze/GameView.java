@@ -89,7 +89,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         userSprite = new CharacterSprite(BitmapFactory.decodeResource(getResources(), R.drawable.fox_64px), screenWidth/2, screenHeight/2);
 
         Context context = getContext();
-        sound = MediaPlayer.create(context, R.raw.alarm);
+
+        SoundManager soundSelection = SoundManager.getInstance(context);
+
+        sound = MediaPlayer.create(context, soundSelection.currSound);
         sound.setLooping(true);
         sound.start();
 
