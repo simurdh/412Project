@@ -208,8 +208,11 @@ public class AlarmLocation {
                 alarmData.getChallenges(),
                 Boolean.toString(alarmData.getActive()),
                 alarmData.isInRange(),
-                alarmData.getHasGf()
-        );
+                alarmData.getHasGf(),
+                alarmData.getMemEnabled(),
+                alarmData.getMathEnabled(),
+                alarmData.getTiltEnabled(),
+                alarmData.getChallengesCompleted());
     }
 
     public void setAlarms(int dayOfWeek, boolean active, AlarmData alarmData)

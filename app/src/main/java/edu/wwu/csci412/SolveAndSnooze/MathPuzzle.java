@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.nio.channels.AlreadyBoundException;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MathPuzzle extends AppCompatActivity {
@@ -34,6 +35,9 @@ public class MathPuzzle extends AppCompatActivity {
     private int[] answers = new int[3];
     private Operator[] operators = new Operator[3];
     private MediaPlayer sound;
+    private DatabaseManager db;
+    private int callingAlarmId;
+    private int challengesCompleted;
 
     // \FIELDS
 
@@ -187,8 +191,45 @@ public class MathPuzzle extends AppCompatActivity {
         sound.pause();
         sound.stop();
         sound.release();
-        Intent intent = new Intent(v.getContext(), MainActivity.class);
-        startActivityForResult(intent, 0);
+
+        //Get the database.
+        db = new DatabaseManager(this);
+
+        //Get the id of the alarm that was triggered.
+        callingAlarmId = this.getIntent().getIntExtra("alarmID", 0);
+
+        //Get the current number of challenges completed.
+        challengesCompleted = this.getIntent().getIntExtra("challengesCompleted",0);
+
+        ArrayList<Intent> validIntents = new ArrayList<Intent>();
+        Intent memIntent = new Intent(v.getContext(),MemoryPuzzle.class);
+        Intent mathIntent = new Intent(v.getContext(), MathPuzzle.class);
+        Intent tiltIntent = new Intent(v.getContext(), SensorData.class);
+
+        System.out.println("CALLING ALARM ID: "+callingAlarmId);
+
+        if(Boolean.parseBoolean(db.selectById(callingAlarmId).getMemEnabled()))
+            validIntents.add(memIntent);
+        if(Boolean.parseBoolean(db.selectById(callingAlarmId).getMathEnabled()))
+            validIntents.add(mathIntent);
+        if(Boolean.parseBoolean(db.selectById(callingAlarmId).getTiltEnabled()))
+            validIntents.add(tiltIntent);
+
+        challengesCompleted++;
+
+        if(db.selectById(callingAlarmId).getChallenges() == challengesCompleted)
+        {
+            Intent mainIntent = new Intent(v.getContext(), MainActivity.class);
+            startActivityForResult(mainIntent,0);
+        }
+        else
+        {
+            Random random = new Random();
+            Intent currentIntent = validIntents.get(random.nextInt(validIntents.size()));
+            currentIntent.putExtra("alarmID",callingAlarmId);
+            currentIntent.putExtra("challengesCompleted", challengesCompleted);
+            startActivityForResult(currentIntent,0);
+        }
     }
 
     private void onFailure(){

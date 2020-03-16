@@ -211,7 +211,7 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
             android:text="Select Puzzles:"/>
-        <!--Maze puzzle -->
+        <!--Memory puzzle -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -220,13 +220,14 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp">
             <CheckBox
-                android:id="@+id/mazeCheckbox"
+                android:id="@+id/memoryCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MAZE"/>
+                android:text="MEMORY" />
         </LinearLayout>
         <!--Math puzzle -->
         <LinearLayout
@@ -245,7 +246,7 @@
                 android:layout_height="wrap_content"
                 android:text="MATH"/>
         </LinearLayout>
-        <!--Memory puzzle -->
+        <!--Tilt puzzle -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -254,30 +255,15 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp">
             <CheckBox
-                android:id="@+id/memoryCheckbox"
+                android:id="@+id/tiltCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
             <TextView
+                android:id="@+id/TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MEMORY"/>
-        </LinearLayout>
-        <!--Matching puzzle -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="15dp"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp">
-            <CheckBox
-                android:id="@+id/matchingCheckbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="MATCHING"/>
+                android:text="TILT" />
         </LinearLayout>
     </LinearLayout>
 

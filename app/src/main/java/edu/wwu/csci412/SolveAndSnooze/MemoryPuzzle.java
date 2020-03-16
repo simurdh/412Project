@@ -7,6 +7,8 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import java.util.ArrayList;
+import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,10 +19,12 @@ public class MemoryPuzzle extends AppCompatActivity {
     private Drawable firstImage;
     private Drawable secondImage;
     private ButtonGridView view;
-
+    private int callingAlarmId;
     private boolean match; //keeps track of if last pair was a match
     private MediaPlayer sound;
     private MemoryPuzzleModel memoryPuzzleModel;
+    private DatabaseManager db;
+    private int challengesCompleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,15 @@ public class MemoryPuzzle extends AppCompatActivity {
         int width = Resources.getSystem().getDisplayMetrics().widthPixels / 3;
         int height = Resources.getSystem().getDisplayMetrics().heightPixels / 5 - getStatusBarHeight();
         int offset = 0; //used to center gridview
+
+        //Get the id of the alarm that was triggered.
+        callingAlarmId = this.getIntent().getIntExtra("alarmID", 0);
+
+        //Get the current challenge completed count.
+        challengesCompleted = this.getIntent().getIntExtra("challengesCompleted",0);
+
+        //Get the database.
+        db = new DatabaseManager(this);
 
         // Choose the smaller of values for the button size, so they will always fit on the screen
         if (height < width) {
@@ -48,8 +61,7 @@ public class MemoryPuzzle extends AppCompatActivity {
     private class solveButtonClicked implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(v.getContext(), MathPuzzle.class);
-            startActivityForResult(intent, 0);
+
         }
     }
 
@@ -92,8 +104,36 @@ public class MemoryPuzzle extends AppCompatActivity {
                         sound.pause();
                         sound.stop();
                         sound.release();
-                        Intent intent = new Intent(v.getContext(), MathPuzzle.class);
-                        startActivityForResult(intent, 0);
+                        ArrayList<Intent> validIntents = new ArrayList<Intent>();
+                        Intent memIntent = new Intent(v.getContext(),MemoryPuzzle.class);
+                        Intent mathIntent = new Intent(v.getContext(), MathPuzzle.class);
+                        Intent tiltIntent = new Intent(v.getContext(), SensorData.class);
+
+                        System.out.println("CALLING ALARM ID IS: "+callingAlarmId);
+
+                        if(Boolean.parseBoolean(db.selectById(callingAlarmId).getMemEnabled()))
+                            validIntents.add(memIntent);
+                        if(Boolean.parseBoolean(db.selectById(callingAlarmId).getMathEnabled()))
+                            validIntents.add(mathIntent);
+                        if(Boolean.parseBoolean(db.selectById(callingAlarmId).getTiltEnabled()))
+                            validIntents.add(tiltIntent);
+
+                        challengesCompleted++;
+
+                        if(db.selectById(callingAlarmId).getChallenges() == challengesCompleted)
+                        {
+                            Intent mainIntent = new Intent(v.getContext(), MainActivity.class);
+                            startActivityForResult(mainIntent,0);
+                        }
+                        else
+                        {
+                            Random random = new Random();
+                            Intent currentIntent = validIntents.get(random.nextInt(validIntents.size()));
+                            currentIntent.putExtra("alarmID",callingAlarmId);
+                            currentIntent.putExtra("challengesCompleted", challengesCompleted);
+                            System.out.println("PASSING ALARM ID: "+callingAlarmId);
+                            startActivityForResult(currentIntent,0);
+                        }
                     }
                 } else {
                     // not a match!

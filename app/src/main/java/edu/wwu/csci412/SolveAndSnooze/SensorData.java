@@ -25,7 +25,7 @@ public class SensorData extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(new GameView(this));
+        setContentView(new GameView(this,this.getIntent().getIntExtra("alarmID", 0),this.getIntent().getIntExtra("challengesCompleted",0)));
         Log.d(TAG, "onCreate: Initializing Sensor Services");
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 

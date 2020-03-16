@@ -36,12 +36,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     private int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
     private MediaPlayer sound;
+    private int callingAlarmId;
+    private DatabaseManager db;
+    private int challengesCompleted;
 
 
-    public GameView(Context context) {
+    public GameView(Context context, int alarmId, int challengesCompleted) {
         super(context);
 
         getHolder().addCallback(this);
+        callingAlarmId = alarmId;
+        db = new DatabaseManager(context);
+        this.challengesCompleted = challengesCompleted;
 
         //new instance of thread
         thread = new MainThread(getHolder(), this);
@@ -127,13 +133,42 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         //exit game screen
         if (!showCharacterSprite && !showCharacterSprite2 && !showCharacterSprite3 && !showCharacterSprite4) {
+
             sound.pause();
             sound.stop();
             sound.release();
+
             thread.setRunning(false);
+
             Context context = getContext();
-            Intent intent = new Intent(context, MemoryPuzzle.class);
-            context.startActivity(intent);
+
+            ArrayList<Intent> validIntents = new ArrayList<Intent>();
+            Intent memIntent = new Intent(context,MemoryPuzzle.class);
+            Intent mathIntent = new Intent(context, MathPuzzle.class);
+            Intent tiltIntent = new Intent(context, SensorData.class);
+
+            if(Boolean.parseBoolean(db.selectById(callingAlarmId).getMemEnabled()))
+                validIntents.add(memIntent);
+            if(Boolean.parseBoolean(db.selectById(callingAlarmId).getMathEnabled()))
+                validIntents.add(mathIntent);
+            if(Boolean.parseBoolean(db.selectById(callingAlarmId).getTiltEnabled()))
+                validIntents.add(tiltIntent);
+
+            challengesCompleted++;
+
+            if(db.selectById(callingAlarmId).getChallenges() == challengesCompleted)
+            {
+                Intent mainIntent = new Intent(context, MainActivity.class);
+                context.startActivity(mainIntent);
+            }
+            else
+            {
+                Random random = new Random();
+                Intent currentIntent = validIntents.get(random.nextInt(validIntents.size()));
+                currentIntent.putExtra("alarmID",callingAlarmId);
+                currentIntent.putExtra("challengesCompleted", challengesCompleted);
+                context.startActivity(currentIntent);
+            }
         }
 
         if (showCharacterSprite)
