@@ -3,6 +3,7 @@ package edu.wwu.csci412.SolveAndSnooze;
 import android.content.Context;
 import android.util.Log;
 import android.widget.CheckBox;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TimePicker;
 
@@ -39,18 +40,18 @@ public class VoiceRecognition extends EditAlarm {
                     hourOfAlarm += Integer.parseInt(individualReturnedWords.get(timeForAlarmIndex).split(":")[0]);
                     minuteOfAlarm = Integer.parseInt(individualReturnedWords.get(timeForAlarmIndex).split(":")[1]);
                 }catch (NumberFormatException e) {
-                    Log.w("EditAlarm", "Caught number format exception");
+                    Log.w("VoiceRecognition", "Caught number format exception");
                 }
-                Log.w("EditAlarm", "hour is " + hourOfAlarm);
-                Log.w("EditAlarm", "minute is " + minuteOfAlarm);
+                Log.w("VoiceRecognition", "hour is " + hourOfAlarm);
+                Log.w("VoiceRecognition", "minute is " + minuteOfAlarm);
             }
             else {
                 try {
                     hourOfAlarm += Integer.parseInt(individualReturnedWords.get(timeForAlarmIndex));
                 }catch (NumberFormatException e) {
-                    Log.w("EditAlarm", "Caught number format exception");
+                    Log.w("VoiceRecognition", "Caught number format exception");
                 }
-                Log.w("EditAlarm", "on the hour of " + hourOfAlarm);
+                Log.w("VoiceRecognition", "on the hour of " + hourOfAlarm);
             }
             timeWheel.setCurrentHour(hourOfAlarm);
             timeWheel.setCurrentMinute(minuteOfAlarm);
@@ -78,57 +79,107 @@ public class VoiceRecognition extends EditAlarm {
             fri.setChecked(true);
         }
         if (individualReturnedWords.contains("Monday")) {
-            Log.w("EditAlarm", "You said Monday");
+            Log.w("VoiceRecognition", "You said Monday");
             CheckBox mon = context.findViewById(R.id.mondayCheckbox);
             mon.setChecked(true);
         }
         if (individualReturnedWords.contains("Tuesday")) {
-            Log.w("EditAlarm", "You said Tuesday");
+            Log.w("VoiceRecognition", "You said Tuesday");
             CheckBox tues = context.findViewById(R.id.tuesdayCheckbox);
             tues.setChecked(true);
         }
         if (individualReturnedWords.contains("Wednesday")) {
-            Log.w("EditAlarm", "You said Wednesday");
+            Log.w("VoiceRecognition", "You said Wednesday");
             CheckBox wed = context.findViewById(R.id.wednesdayCheckbox);
             wed.setChecked(true);
         }
         if (individualReturnedWords.contains("Thursday")) {
-            Log.w("EditAlarm", "You said Thursday");
+            Log.w("VoiceRecognition", "You said Thursday");
             CheckBox thurs = context.findViewById(R.id.thursdayCheckbox);
             thurs.setChecked(true);
         }
         if (individualReturnedWords.contains("Friday")) {
-            Log.w("EditAlarm", "You said Friday");
+            Log.w("VoiceRecognition", "You said Friday");
             CheckBox fri = context.findViewById(R.id.fridayCheckbox);
             fri.setChecked(true);
         }
         if (individualReturnedWords.contains("Saturday")) {
-            Log.w("EditAlarm", "You said Saturday");
+            Log.w("VoiceRecognition", "You said Saturday");
             CheckBox sat = context.findViewById(R.id.saturdayCheckbox);
             sat.setChecked(true);
         }
         if (individualReturnedWords.contains("Sunday")) {
-            Log.w("EditAlarm", "You said Sunday");
+            Log.w("VoiceRecognition", "You said Sunday");
             CheckBox sun = context.findViewById(R.id.sundayCheckbox);
             sun.setChecked(true);
         }
 
+        /* set challenges based on number said */
+        //catch challenges or puzzles or puzzle or challenge or game or games
+        int challengeWordIndex = -1;
+        if (individualReturnedWords.contains("challenge")) {
+            Log.w("VoiceRecognition", "You indicated number of challenge");
+            challengeWordIndex = individualReturnedWords.indexOf("challenge");
+        }
+        else if (individualReturnedWords.contains("challenges")) {
+            Log.w("VoiceRecognition", "You indicated number of challenges");
+            challengeWordIndex = individualReturnedWords.indexOf("challenges");
+        }
+        else if (individualReturnedWords.contains("puzzle")) {
+            Log.w("VoiceRecognition", "You indicated number of puzzle");
+            challengeWordIndex = individualReturnedWords.indexOf("puzzle");
+        }
+        else if (individualReturnedWords.contains("puzzles")) {
+            Log.w("VoiceRecognition", "You indicated number of puzzles");
+            challengeWordIndex = individualReturnedWords.indexOf("puzzles");
+        }
+        else if (individualReturnedWords.contains("game")) {
+            Log.w("VoiceRecognition", "You indicated number of game");
+            challengeWordIndex = individualReturnedWords.indexOf("game");
+        }
+        else if (individualReturnedWords.contains("games")) {
+            Log.w("VoiceRecognition", "You indicated number of games");
+            challengeWordIndex = individualReturnedWords.indexOf("games");
+        }
+        int numberOfChallenges = -1;
+        if (challengeWordIndex != -1) {
+            if (challengeWordIndex-1 >= 0) {
+                try {
+                    numberOfChallenges = Integer.parseInt(individualReturnedWords.get(challengeWordIndex-1));
+                }catch (NumberFormatException e) {
+                    Log.w("VoiceRecognition", "Caught number format exception");
+                }
+                Log.w("VoiceRecognition", "This many challenges requested: " + numberOfChallenges);
+            }
+            timeWheel.setCurrentHour(hourOfAlarm);
+            //set number of challenges
+            if (numberOfChallenges >= 0 && numberOfChallenges <= 5) {
+                SeekBar challengesBar = context.findViewById(R.id.seekBar);
+                challengesBar.setProgress(numberOfChallenges);
+            }
+        }
+
         /* set alarm challenges and location based on voice command*/
         if (individualReturnedWords.contains("memory")) {
-            Log.w("EditAlarm", "You said memory");
+            Log.w("VoiceRecognition", "You said memory");
             CheckBox memory = context.findViewById(R.id.memoryCheckbox);
             memory.setChecked(true);
         }
         if (individualReturnedWords.contains("math")) {
-            Log.w("EditAlarm", "You said math");
+            Log.w("VoiceRecognition", "You said math");
             CheckBox math = context.findViewById(R.id.mathCheckbox);
             math.setChecked(true);
         }
+        if (individualReturnedWords.contains("tilt")) {
+            Log.w("VoiceRecognition", "You said tilt");
+            //CheckBox tlt = context.findViewById(R.id.tiltCheckbox);
+            //tilt.setChecked(true);
+        }
         if (individualReturnedWords.contains("game"))
-            Log.w("EditAlarm", "You said game?");
+            Log.w("VoiceRecognition", "You said game?");
 
         if (individualReturnedWords.contains("location")) {
-            Log.w("EditAlarm", "Turn on location");
+            Log.w("VoiceRecognition", "Turn on location");
             Switch location = context.findViewById(R.id.locationSwitch);
             location.setChecked(true);
         }
