@@ -67,6 +67,7 @@ public class EditAlarm extends AppCompatActivity {
         /* widgets on screen */
         Button saveButton = findViewById(R.id.saveButton);
         Button deleteButton = findViewById(R.id.deleteButton);
+        Button speakButton = findViewById(R.id.speakButton);
 
         currInstance = null;
 
@@ -251,12 +252,28 @@ public class EditAlarm extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
+
+        speakButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Test if device supports speech recognition
+                PackageManager manager = getPackageManager();
+                List<ResolveInfo> listOfMatches = manager.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+                if (listOfMatches.size() > 0) {
+                    listen();
+                }
+                else {
+                    //Speech recognition not supported
+                    //Toast.makeText(this, "Device does not support speech recognition", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     /* voice recognition method to listen for input */
     private void listen() {
         Intent listenIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        listenIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Set an alarm");
+        listenIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Add to alarm settings");
         listenIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         listenIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
         startActivityForResult(listenIntent, COMMAND_REQUEST);

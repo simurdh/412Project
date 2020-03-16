@@ -18,6 +18,7 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name="EditAlarm"></activity>
         <activity android:name=".MemoryPuzzle"></activity>
+        <activity android:name=".VoiceRecognition"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
