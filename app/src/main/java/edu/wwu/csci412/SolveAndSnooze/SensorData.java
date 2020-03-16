@@ -2,6 +2,7 @@ package edu.wwu.csci412.SolveAndSnooze;
 
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -9,6 +10,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -32,6 +34,35 @@ public class SensorData extends Activity implements SensorEventListener {
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(SensorData.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         Log.d(TAG, "onCreate: Registered accelerometer listener");
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        //Do nothing.
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+
+        activityManager.moveTaskToFront(getTaskId(), 0);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
+        {
+            //Do nothing
+        }
+        if((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
+        {
+            //Do nothing
+        }
+        return true;
     }
 
     @Override

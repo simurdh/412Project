@@ -5,8 +5,11 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.app.ActivityManager;
+import android.content.Context;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -52,10 +55,40 @@ public class MemoryPuzzle extends AppCompatActivity {
         memoryPuzzleModel = new MemoryPuzzleModel(this);
         sound = MediaPlayer.create(this,R.raw.alarm);
         sound.setLooping(true);
+        sound.setVolume(100,100);
         sound.start();
         view = new ButtonGridView(this, width, offset, new gridButtonClicked(), memoryPuzzleModel);
         setContentView(view);
 
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        //Do nothing.
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+
+        activityManager.moveTaskToFront(getTaskId(), 0);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
+        {
+            //Do nothing
+        }
+        if((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
+        {
+            //Do nothing
+        }
+        return true;
     }
 
     private class solveButtonClicked implements View.OnClickListener {

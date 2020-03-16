@@ -1,21 +1,20 @@
 package edu.wwu.csci412.SolveAndSnooze;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.nio.channels.AlreadyBoundException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -62,9 +61,39 @@ public class MathPuzzle extends AppCompatActivity {
 
         sound = MediaPlayer.create(this, R.raw.alarm);
         sound.setLooping(true);
+        sound.setVolume(100,100);
         sound.start();
         generateQuestions();
         setQuesitions();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        //Do nothing.
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+
+        activityManager.moveTaskToFront(getTaskId(), 0);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
+        {
+            //Do nothing
+        }
+        if((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
+        {
+            //Do nothing
+        }
+        return true;
     }
 
     // THESE METHODS SHOULD OUGHT TO BE IN A MODEL
