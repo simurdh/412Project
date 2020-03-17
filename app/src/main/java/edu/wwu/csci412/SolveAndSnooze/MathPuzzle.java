@@ -1,3 +1,7 @@
+/**
+ * Math puzzle
+ */
+
 package edu.wwu.csci412.SolveAndSnooze;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -61,6 +65,12 @@ public class MathPuzzle extends AppCompatActivity {
         });
 
         setupAudio();
+        SoundManager soundSelection = SoundManager.getInstance(this);
+
+        sound = MediaPlayer.create(this, soundSelection.currSound);
+        sound.setLooping(true);
+        sound.setVolume(100,100);
+        sound.start();
         generateQuestions();
 
         setQuesitions();
@@ -284,10 +294,5 @@ public class MathPuzzle extends AppCompatActivity {
         sysAudio.setStreamVolume(AudioManager.STREAM_ALARM, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         sysAudio.setStreamVolume(AudioManager.STREAM_SYSTEM, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         sysAudio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-
-        sound = MediaPlayer.create(this,R.raw.alarm);
-        sound.setLooping(true);
-        sound.setVolume(100,100);
-        sound.start();
     }
 }

@@ -22,4 +22,9 @@
     <string name="location_info">When selecting location while editing or creating an alarm, the app will use your current location to set up a 100 meter radius.
         The alarm will only sound if you are in this radius. Every time you unselect and reselect the location option, it will use the current location for the radius.</string>
     <string name="title_activity_basic_puzzle">BasicPuzzle</string>
+    <string name="classic_alarm">Classic</string>
+    <string name="air_alarm">Air Raid</string>
+    <string name="enterprise_alarm">Enterprise Klaxon</string>
+    <string name="william_alarm">William Tell</string>
+    <string name="setSoundLabel">set alarm sound</string>
 </resources>

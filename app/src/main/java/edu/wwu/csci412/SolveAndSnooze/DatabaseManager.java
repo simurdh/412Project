@@ -1,3 +1,6 @@
+/**
+ * Database Manager class
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Context;
@@ -54,6 +57,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * insert an alarm into database
+     * @param newAlarm alarm info to insert
+     * @return the id of newly inserted alarm
+     */
     public Integer insert(AlarmData newAlarm){
         SQLiteDatabase db  = this.getReadableDatabase();
         String sqlInsert = "insert into " + ALARM_TABLE_NAME;

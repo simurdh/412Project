@@ -1,20 +1,18 @@
+/**
+ * Singleton class to store logic for location and geofences
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
-
-import androidx.core.app.ActivityCompat;
-
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
@@ -97,6 +95,7 @@ public class AlarmLocation {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
+    // logic to set up Geofences
     private GeofencingRequest getGeofencingRequest() {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
@@ -104,6 +103,7 @@ public class AlarmLocation {
         return builder.build();
     }
 
+    // logic to set up Geofences
     private PendingIntent getGeofencePendingIntent() {
         // Reuse the PendingIntent if we already have it.
         if (geofencePendingIntent != null) {
@@ -152,6 +152,11 @@ public class AlarmLocation {
     }
 
 
+    /**
+     * Updates which alarms are active based on their location
+     * @param triggeringGeofences geofences that user has entered/exited
+     * @param inRange whether they are in range of triggeringGeofences
+     */
     public void updateActiveAlarms(List<Geofence> triggeringGeofences, String inRange) {
         for (Geofence gf : triggeringGeofences) {
             //Update alarms in database
@@ -215,6 +220,12 @@ public class AlarmLocation {
                 alarmData.getChallengesCompleted());
     }
 
+    /**
+     * set an alarm
+     * @param dayOfWeek day alarm will sound
+     * @param active whether the alarm is enabled and in range
+     * @param alarmData information about an alarm
+     */
     public void setAlarms(int dayOfWeek, boolean active, AlarmData alarmData)
     {
         Intent intent = new Intent(context, MemoryPuzzle.class);

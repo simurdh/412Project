@@ -1,3 +1,6 @@
+/**
+ * Memory puzzle controller class
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Intent;
@@ -53,8 +56,16 @@ public class MemoryPuzzle extends AppCompatActivity {
             width = height;
         }
 
+        SoundManager soundSelection = SoundManager.getInstance(this);
+
         memoryPuzzleModel = new MemoryPuzzleModel(this);
+      
         setupAudio();
+      
+        sound = MediaPlayer.create(this,soundSelection.currSound);
+        sound.setLooping(true);
+        sound.setVolume(100,100);
+        sound.start();
         view = new ButtonGridView(this, width, offset, new gridButtonClicked(), memoryPuzzleModel);
         setContentView(view);
 
@@ -196,10 +207,5 @@ public class MemoryPuzzle extends AppCompatActivity {
         sysAudio.setStreamVolume(AudioManager.STREAM_ALARM, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         sysAudio.setStreamVolume(AudioManager.STREAM_SYSTEM, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         sysAudio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-
-        sound = MediaPlayer.create(this,R.raw.alarm);
-        sound.setLooping(true);
-        sound.setVolume(100,100);
-        sound.start();
     }
 }

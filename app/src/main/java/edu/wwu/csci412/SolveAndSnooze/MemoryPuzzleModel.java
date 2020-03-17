@@ -1,4 +1,6 @@
-// Model Class to hold images for the memory puzzle
+/**
+ * Model Class to hold images for the memory puzzle
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Context;

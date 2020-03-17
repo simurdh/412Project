@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Item android:id="@+id/classic_selection"
+        android:title="@string/classic_alarm"
+        app:showAsAction="never"
+        />
+    <Item android:id="@+id/air_raid_selection"
+        android:title="@string/air_alarm"
+        app:showAsAction="never"
+        />
+    <Item android:id="@+id/enterprise_selection"
+        android:title="@string/enterprise_alarm"
+        app:showAsAction="never"
+        />
+    <Item android:id="@+id/william_selection"
+        android:title="@string/william_alarm"
+        app:showAsAction="never"
+        />
+</menu>

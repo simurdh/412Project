@@ -1,16 +1,18 @@
+/**
+ * Edit alarm info logic
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,7 +48,62 @@ public class EditAlarm extends AppCompatActivity {
 
         currInstance = null;
 
+        SoundManager sound = SoundManager.getInstance(this);
+
         DatabaseManager db = new DatabaseManager(this);
+
+        RadioButton classicRadio = findViewById(R.id.classic_radio);
+        RadioButton airRadio = findViewById(R.id.air_radio);
+        RadioButton enterpriseRadio = findViewById(R.id.enterprise_radio);
+        RadioButton williamRadio = findViewById(R.id.william_radio);
+
+        switch(sound.currSound){
+            case R.raw.alarm:
+                classicRadio.setChecked(true);
+                break;
+            case R.raw.air_raid:
+                airRadio.setChecked(true);
+                break;
+            case R.raw.star_trek_klaxon:
+                enterpriseRadio.setChecked(true);
+                break;
+            case R.raw.william_tell:
+                williamRadio.setChecked(true);
+                break;
+        }
+
+        classicRadio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SoundManager sound = SoundManager.getInstance(EditAlarm.this);
+                sound.setAlarmSound(0, EditAlarm.this);
+            }
+        });
+
+        airRadio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SoundManager sound = SoundManager.getInstance(EditAlarm.this);
+                sound.setAlarmSound(1, EditAlarm.this);
+            }
+        });
+
+        enterpriseRadio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SoundManager sound = SoundManager.getInstance(EditAlarm.this);
+                sound.setAlarmSound(2, EditAlarm.this);
+            }
+        });
+
+        williamRadio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SoundManager sound = SoundManager.getInstance(EditAlarm.this);
+                sound.setAlarmSound(3, EditAlarm.this);
+            }
+        });
+
 
         if(this.isNew){
             currInstance = new AlarmData();

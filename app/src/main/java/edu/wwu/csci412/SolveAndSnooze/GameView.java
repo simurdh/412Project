@@ -1,3 +1,7 @@
+/**
+ * View for sensor puzzle
+ */
+
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Context;
@@ -93,7 +97,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         Context context = getContext();
 
-        sound = MediaPlayer.create(context, R.raw.alarm);
+
+        SoundManager soundSelection = SoundManager.getInstance(context);
+
+        sound = MediaPlayer.create(context, soundSelection.currSound);
         sound.setLooping(true);
         sound.setVolume(100,100);
         sound.start();

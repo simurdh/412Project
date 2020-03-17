@@ -1,3 +1,6 @@
+/**
+ * Controls the help page
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.os.Bundle;

@@ -1,3 +1,7 @@
+/**
+ * Broadcast Receiver to be triggered when users enter or exit a geofence
+ */
+
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.BroadcastReceiver;
@@ -5,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.List;
@@ -17,8 +20,6 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError()) {
-//            String errorMessage = GeofenceStatusCodes.getErrorString(geofencingEvent.getErrorCode());
-//            Log.e(TAG, errorMessage);
             return;
         }
 
@@ -40,11 +41,6 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
             alarmLocation.updateActiveAlarms(triggeringGeofences, "false");
             System.out.println("EXITED!");
 
-        } else {
-                // Log the error.
-    //            Log.e(TAG, getString(R.string.geofence_transition_invalid_type,
-    //                    geofenceTransition));
-            }
         }
-
+    }
 }
