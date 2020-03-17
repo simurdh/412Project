@@ -239,6 +239,26 @@ public class EditAlarm extends AppCompatActivity {
                 SeekBar challenges = findViewById(R.id.seekBar);
                 EditAlarm.this.currInstance.setChallenges(challenges.getProgress());
 
+                //Get challenge options.
+                CheckBox memBox = findViewById(R.id.memoryCheckbox);
+                CheckBox mathBox = findViewById(R.id.mathCheckbox);
+                CheckBox tiltBox = findViewById(R.id.tiltCheckbox);
+                if(memBox.isChecked())
+                    EditAlarm.this.currInstance.setMemEnabled(true);
+                else
+                    EditAlarm.this.currInstance.setMemEnabled(false);
+                if(mathBox.isChecked())
+                    EditAlarm.this.currInstance.setMathEnabled(true);
+                else
+                    EditAlarm.this.currInstance.setMathEnabled(false);
+                if(tiltBox.isChecked())
+                    EditAlarm.this.currInstance.setTiltEnabled(true);
+                else
+                    EditAlarm.this.currInstance.setTiltEnabled(false);
+
+                //Make sure challenges completed is 0.
+                EditAlarm.this.currInstance.setChallengesCompleted(0);
+
                 //Get gps setting.
                 if(locationEnabled.isChecked())
                 {
@@ -260,7 +280,11 @@ public class EditAlarm extends AppCompatActivity {
                             EditAlarm.this.currInstance.getChallenges(),
                             Boolean.toString(EditAlarm.this.currInstance.getActive()),
                             EditAlarm.this.currInstance.isInRange(),
-                            EditAlarm.this.currInstance.getHasGf()
+                            EditAlarm.this.currInstance.getHasGf(),
+                            EditAlarm.this.currInstance.getMemEnabled(),
+                            EditAlarm.this.currInstance.getMathEnabled(),
+                            EditAlarm.this.currInstance.getTiltEnabled(),
+                            EditAlarm.this.currInstance.getChallengesCompleted()
                             );
                 }
 

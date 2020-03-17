@@ -33,6 +33,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 
 /* main activity screen controller */
 public class MainActivity extends AppCompatActivity {
@@ -132,8 +133,33 @@ public class MainActivity extends AppCompatActivity {
 
     public void setAlarms(int dayOfWeek, boolean active, AlarmData alarmData)
     {
-        Intent intent = new Intent(MainActivity.this, MemoryPuzzle.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, alarmData.getid(), intent, 0);
+
+        Intent selectedIntent;
+
+        ArrayList<Intent> validIntents = new ArrayList<Intent>();
+        Intent memIntent = new Intent(MainActivity.this,MemoryPuzzle.class);
+        Intent mathIntent = new Intent(MainActivity.this, MathPuzzle.class);
+        Intent tiltIntent = new Intent(MainActivity.this, SensorData.class);
+
+        if(Boolean.parseBoolean(alarmData.getMemEnabled()))
+            validIntents.add(memIntent);
+        if(Boolean.parseBoolean(alarmData.getMathEnabled()))
+            validIntents.add(mathIntent);
+        if(Boolean.parseBoolean(alarmData.getTiltEnabled()))
+            validIntents.add(tiltIntent);
+
+        if(alarmData.getChallenges() == 0 || validIntents.size() == 0)
+        {
+            selectedIntent = new Intent(MainActivity.this, BasicPuzzle.class);
+        }
+        else
+        {
+            Random random = new Random();
+            selectedIntent = validIntents.get(random.nextInt(validIntents.size()));
+            selectedIntent.putExtra("alarmID",alarmData.getid());
+            selectedIntent.putExtra("challengesCompleted", 0);
+        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, alarmData.getid(), selectedIntent, 0);
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         // enable alarm
@@ -318,7 +344,11 @@ public class MainActivity extends AppCompatActivity {
                 alarmData.getChallenges(),
                 Boolean.toString(alarmData.getActive()),
                 alarmData.isInRange(),
-                alarmData.getHasGf()
+                alarmData.getHasGf(),
+                alarmData.getMemEnabled(),
+                alarmData.getMathEnabled(),
+                alarmData.getTiltEnabled(),
+                alarmData.getChallengesCompleted()
         );
     }
 

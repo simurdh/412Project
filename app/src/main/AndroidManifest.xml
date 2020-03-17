@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.wwu.csci412.SolveAndSnooze">
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
 
     <application
         android:allowBackup="true"
@@ -13,12 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".MathPuzzle"></activity>
-        <activity android:name=".SensorData"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name="EditAlarm"></activity>
-        <activity android:name=".HelpActivity"></activity>
-        <activity android:name=".MemoryPuzzle"></activity>
+        <activity android:name=".MathPuzzle" />
+        <activity
+            android:name=".SensorData"
+            android:screenOrientation="portrait" />
+        <activity android:name=".EditAlarm" />
+        <activity android:name=".HelpActivity" />
+        <activity android:name=".MemoryPuzzle" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,8 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".GeofenceBroadcastReceiver"/>
-
+        <activity android:name=".BasicPuzzle"/>
+        <receiver android:name=".GeofenceBroadcastReceiver" />
     </application>
-
 </manifest>
