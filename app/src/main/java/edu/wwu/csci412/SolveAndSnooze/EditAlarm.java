@@ -4,7 +4,14 @@
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+
+import android.provider.ContactsContract;
+import android.speech.RecognizerIntent;
+import android.speech.tts.Voice;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,10 +21,18 @@ import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TimePicker;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /* edit alarm screen controller */
 public class EditAlarm extends AppCompatActivity {
+    private static final int COMMAND_REQUEST = 1;
 
     public boolean isNew;
 
@@ -30,10 +45,22 @@ public class EditAlarm extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        alarmLocation = AlarmLocation.getInstance(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_alarm);
-        alarmLocation = AlarmLocation.getInstance(this);
+
+        //Test if device supports speech recognition
+        PackageManager manager = getPackageManager();
+        List<ResolveInfo> listOfMatches = manager.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+        if (listOfMatches.size() > 0) {
+            listen();
+        }
+        else {
+            //Speech recognition not supported
+            Toast.makeText(this, "Device does not support speech recognition", Toast.LENGTH_LONG).show();
+        }
     }
+
     public void onStart() {
         this.isNew = MainActivity.isNew;
 
@@ -45,6 +72,7 @@ public class EditAlarm extends AppCompatActivity {
         /* widgets on screen */
         Button saveButton = findViewById(R.id.saveButton);
         Button deleteButton = findViewById(R.id.deleteButton);
+        Button speakButton = findViewById(R.id.speakButton);
 
         currInstance = null;
 
@@ -167,9 +195,6 @@ public class EditAlarm extends AppCompatActivity {
 
             challenges.setProgress(currInstance.getChallenges());
         }
-
-
-
 
         /* location */
         final Switch locationEnabled = (Switch) findViewById(R.id.locationSwitch);
@@ -311,6 +336,56 @@ public class EditAlarm extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
+
+        speakButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Test if device supports speech recognition
+                PackageManager manager = getPackageManager();
+                List<ResolveInfo> listOfMatches = manager.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+                if (listOfMatches.size() > 0) {
+                    listen();
+                }
+                else {
+                    //Speech recognition not supported
+                    //Toast.makeText(this, "Device does not support speech recognition", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    /* voice recognition method to listen for input */
+    private void listen() {
+        Intent listenIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        listenIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Add to alarm settings");
+        listenIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        listenIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
+        startActivityForResult(listenIntent, COMMAND_REQUEST);
+    }
+
+    /* voice recognition method to handle voice input into array */
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == COMMAND_REQUEST && resultCode == RESULT_OK) {
+            //get list of possible words
+            ArrayList<String> returnedWords = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            //get scores for possible words
+            float[] scores = data.getFloatArrayExtra(RecognizerIntent.EXTRA_CONFIDENCE_SCORES);
+
+            //display results
+            int i = 0;
+            for (String word : returnedWords) {
+                if (scores != null && i < scores.length) {
+                    Log.w("EditAlarm", word + ": " + scores[i]);
+                }
+                i++;
+            }
+            //get individual words from sentence said and set appropriately
+            List<String> individualReturnedWords = Arrays.asList(returnedWords.get(0).split(" "));
+            VoiceRecognition.voiceRec(this, individualReturnedWords);
+
+
+        }
     }
 
     private class LocationEnabledListener implements CompoundButton.OnCheckedChangeListener {
@@ -331,7 +406,4 @@ public class EditAlarm extends AppCompatActivity {
             }
         }
     }
-
-
-
 }
