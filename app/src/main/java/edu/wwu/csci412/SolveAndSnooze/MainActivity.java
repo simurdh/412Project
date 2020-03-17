@@ -69,8 +69,7 @@ public class MainActivity extends AppCompatActivity {
         updateView();
 
         // verify location is enabled
-        //TODO: Uncomment this code!!!
-        /*boolean gpsEnabled = alarmLocation.locationServicesEnabled();
+        boolean gpsEnabled = alarmLocation.locationServicesEnabled();
         if (gpsEnabled == false) {
             enableLocationSettings();
         }
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                             Manifest.permission.ACCESS_COARSE_LOCATION,
                     },
                     PERMISSION_REQUEST_LOCATION);
-        }*/
+        }
     }
 
     private void enableLocationSettings() {

@@ -313,7 +313,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="LOCATION "/>
-        <!--when turned on, text box appears?-->
     </LinearLayout>
 
     <LinearLayout
@@ -330,9 +329,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:layout_marginRight="200dp"
-            android:layout_weight="1"
-            android:text="Delete" />
+            android:text="Delete"/>
 
         <Button
             android:id="@+id/speakButton"

@@ -159,6 +159,9 @@ public class VoiceRecognition extends EditAlarm {
             }
         }
 
+        /* set sound based on voice command */
+
+
         /* set alarm challenges and location based on voice command*/
         if (individualReturnedWords.contains("memory")) {
             Log.w("VoiceRecognition", "You said memory");
