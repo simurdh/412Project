@@ -1,3 +1,7 @@
+/**
+ * Controller class for setting alarm sounds
+ */
+
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Context;
@@ -29,6 +33,10 @@ public class SoundManager {
         return instance;
     }
 
+    /**
+     * set alarm sound
+     * @param choice the user selected sound from Edit Alarm
+     */
     public void setAlarmSound(int choice, Context context){
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor edit = pref.edit();
