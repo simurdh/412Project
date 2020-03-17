@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.os.Build;
 import android.os.Bundle;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
@@ -255,7 +256,11 @@ public class AlarmLocation {
             }
 
             alarmData.setActive(true);
-            am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            } else {
+                am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            }
         }
         else
         {

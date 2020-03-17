@@ -9,6 +9,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.widget.CheckBox;
 
@@ -202,7 +203,11 @@ public class AlarmData {
 
             this.setActive(true);
             System.out.println("ALARM SET!");
-            am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            } else {
+                am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            }
         }
         else
         {

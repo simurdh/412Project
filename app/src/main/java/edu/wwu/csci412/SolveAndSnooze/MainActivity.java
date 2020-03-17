@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -185,7 +186,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
             alarmData.setActive(true);
-            am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            } else {
+                am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            }
         }
         else
         {
