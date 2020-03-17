@@ -1,3 +1,6 @@
+/**
+ * When no challenges or other puzzles are selected, this puzzle will play
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +36,9 @@ public class BasicPuzzle extends AppCompatActivity {
         sysAudio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
     }
 
+    /**
+     * User clicks the stop button, need to turn off sound and go back to main screen
+     */
     public void onStopClick(View view)
     {
         sound.pause();
