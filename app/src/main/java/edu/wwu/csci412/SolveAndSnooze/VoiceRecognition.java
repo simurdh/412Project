@@ -3,6 +3,7 @@ package edu.wwu.csci412.SolveAndSnooze;
 import android.content.Context;
 import android.util.Log;
 import android.widget.CheckBox;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TimePicker;
@@ -160,7 +161,22 @@ public class VoiceRecognition extends EditAlarm {
         }
 
         /* set sound based on voice command */
-
+        if (individualReturnedWords.contains("classic")) {
+            RadioGroup rg = context.findViewById(R.id.soundRadioGroup);
+            rg.check(R.id.classic_radio);
+        }
+        if (individualReturnedWords.contains("air") && individualReturnedWords.contains("raid")) {
+            RadioGroup rg = context.findViewById(R.id.soundRadioGroup);
+            rg.check(R.id.air_radio);
+        }
+        if (individualReturnedWords.contains("enterprise")) {
+            RadioGroup rg = context.findViewById(R.id.soundRadioGroup);
+            rg.check(R.id.enterprise_radio);
+        }
+        if (individualReturnedWords.contains("William") || individualReturnedWords.contains("tell")) {
+            RadioGroup rg = context.findViewById(R.id.soundRadioGroup);
+            rg.check(R.id.william_radio);
+        }
 
         /* set alarm challenges and location based on voice command*/
         if (individualReturnedWords.contains("memory")) {
@@ -175,8 +191,8 @@ public class VoiceRecognition extends EditAlarm {
         }
         if (individualReturnedWords.contains("tilt")) {
             Log.w("VoiceRecognition", "You said tilt");
-            //CheckBox tlt = context.findViewById(R.id.tiltCheckbox);
-            //tilt.setChecked(true);
+            CheckBox tilt = context.findViewById(R.id.tiltCheckbox);
+            tilt.setChecked(true);
         }
         if (individualReturnedWords.contains("game"))
             Log.w("VoiceRecognition", "You said game?");
