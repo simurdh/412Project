@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BasicPuzzle"
+    android:background="#888888">
+
+    <TextView
+        android:id="@+id/alarmTitle"
+        style="@style/mathSolveTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Alarm"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/basicStopButton"
+        android:layout_width="160dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="153dp"
+        android:gravity="center"
+        android:onClick='onStopClick'
+        android:text="STOP"
+        android:textSize="30dp" />
+</RelativeLayout>

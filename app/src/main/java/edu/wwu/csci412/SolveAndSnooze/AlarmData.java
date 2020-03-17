@@ -1,3 +1,7 @@
+/**
+ * Store information about an alarm
+ */
+
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.app.AlarmManager;
@@ -6,19 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.TimePicker;
-
-import androidx.core.content.ContextCompat;
 
 import java.util.Calendar;
 
@@ -36,6 +28,10 @@ public class AlarmData {
     public static final String ACTIVE = "active";
     private static final String IN_RANGE = "inRange";
     private static final String HAS_GF = "hasGeofence";
+    private static final String MEM_PUZZLE = "memoryPuzzle";
+    private static final String MATH_PUZZLE = "mathPuzzle";
+    private static final String TILT_PUZZLE = "tilePuzzle";
+    private static final String CHALLENGES_COMPLETED = "challengesCompleted";
 
 
     /* alarm variables */
@@ -50,6 +46,10 @@ public class AlarmData {
     private CheckBox armAlarm;
     private boolean inRange; // if the user is in range of location enabled alarm. Will always be true if location is disabled
     private boolean hasGf;
+    private boolean memPuzzle;
+    private boolean mathPuzzle;
+    private boolean tiltPuzzle;
+    private int challengesCompleted;
 
     /* instantiate alarm data */
 
@@ -63,13 +63,18 @@ public class AlarmData {
         setActive(pref.getBoolean(ACTIVE,false));
         setInRange(pref.getBoolean(IN_RANGE, true));
         setHasGf(pref.getBoolean(HAS_GF, false));
+        setMemEnabled(pref.getBoolean(MEM_PUZZLE, false));
+        setMathEnabled(pref.getBoolean(MATH_PUZZLE, false));
+        setTiltEnabled(pref.getBoolean(TILT_PUZZLE, false));
+        setChallengesCompleted(pref.getInt(CHALLENGES_COMPLETED, 0));
 
     }
 
     /* Secondary constructor for DB */
 
     public AlarmData(int id, int hour, int minutes, String am_pm, String days, int challenges,
-                     boolean active, boolean inRange, boolean hasGf){
+                     boolean active, boolean inRange, boolean hasGf, boolean memPuzzle, boolean mathPuzzle,
+                     boolean tiltPuzzle, int challengesCompleted){
         this.id = id;
         this.hour = hour;
         this.minutes = minutes;
@@ -80,6 +85,10 @@ public class AlarmData {
         this.inRange = inRange;
         this.hasGf = hasGf;
         this.ctx = null;
+        this.memPuzzle = memPuzzle;
+        this.mathPuzzle = mathPuzzle;
+        this.tiltPuzzle = tiltPuzzle;
+        this.challengesCompleted = challengesCompleted;
     }
 
     /* Tertiary constructor for new Alarms */
@@ -124,6 +133,21 @@ public class AlarmData {
         this.hasGf = hasGf;
     }
 
+    public String getMemEnabled() {return String.valueOf(memPuzzle);}
+
+    public void setMemEnabled(boolean memPuzzle){this.memPuzzle = memPuzzle;}
+
+    public String getMathEnabled() {return String.valueOf(mathPuzzle);}
+
+    public void setMathEnabled(boolean mathPuzzle){this.mathPuzzle = mathPuzzle;}
+
+    public String getTiltEnabled() {return String.valueOf(tiltPuzzle);}
+
+    public void setTiltEnabled(boolean tiltPuzzle){this.tiltPuzzle = tiltPuzzle;}
+
+    public int getChallengesCompleted() {return this.challengesCompleted;}
+
+    public void setChallengesCompleted(int challengesCompleted) {this.challengesCompleted = challengesCompleted;};
 
 
 
@@ -145,6 +169,10 @@ public class AlarmData {
         return String.format("%d challenges", this.challenges);
     }
 
+    /**
+     * activate the alarm
+     * @param dayOfWeek day the alarm will sound
+     */
     public void setAlarm(int dayOfWeek){
         MainActivity activity = (MainActivity) this.ctx;
 

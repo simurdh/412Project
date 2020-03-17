@@ -1,3 +1,6 @@
+/**
+ * View class for setting up a grid of buttons
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Context;
@@ -29,7 +32,7 @@ public class ButtonGridView extends GridLayout {
         title.setWidth(3*width);
         title.setHeight(width);
         title.setGravity(Gravity.CENTER);
-        title.setTextSize(getResources().getDimension(R.dimen.textsize));
+        title.setTextSize(getResources().getDimension(R.dimen.subtitle_size));
         title.setText(getResources().getString(R.string.title));
         addView(title);
 

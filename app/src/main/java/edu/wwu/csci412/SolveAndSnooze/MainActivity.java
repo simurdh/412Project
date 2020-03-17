@@ -1,6 +1,7 @@
 package edu.wwu.csci412.SolveAndSnooze;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -10,38 +11,29 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Message;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.ScaleAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Switch;
-import android.widget.TimePicker;
-
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingClient;
-import com.google.android.gms.location.GeofencingRequest;
-import com.google.android.gms.location.LocationServices;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Random;
 
 /* main activity screen controller */
 public class MainActivity extends AppCompatActivity {
@@ -52,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private AlarmLocation alarmLocation;
     private DatabaseManager db;
 
+    private static final String TAG = "MAIN_ACTIVITY";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},1);
         AlarmData alarmData = new AlarmData(this);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         alarmLocation = AlarmLocation.getInstance(this);
         db = new DatabaseManager(this);
     }
@@ -113,9 +109,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateView() {
         //widgets used on screen
         //Button editButton = findViewById(R.id.EditButton);
-        Button challengeButton = findViewById(R.id.challengeButton);
-        Button sensorButton = findViewById(R.id.SensorChallenge);
-        ImageButton addAlarm = findViewById(R.id.addAlarmButton);
+//        ImageButton addAlarm = findViewById(R.id.addAlarmButton);
         //final CheckBox alarmCheckBox = findViewById(R.id.alarmCheckBox);
         MediaPlayer sound = MediaPlayer.create(this, R.raw.alarm);
         sound.stop();
@@ -133,48 +127,39 @@ public class MainActivity extends AppCompatActivity {
 
         for(AlarmData alarm : dataList){
             alarmList.addView(makeView(alarm));
-
-//            db.updateById(alarm.getid(),
-//                    alarm.getHour(),
-//                    alarm.getMinutes(),
-//                    alarm.getAM_PM(),
-//                    alarm.getDays(),
-//                    alarm.getChallenges(),
-//                    Boolean.toString(alarm.getActive()),
-//                    alarm.isInRange(),
-//                    alarm.getHasGf()
-//            );
-
             alarmSetup(alarm);
         }
-
-        addAlarm.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                MainActivity.isNew = true;
-                Intent intent = new Intent(v.getContext(), EditAlarm.class);
-                startActivityForResult(intent, 0);
-            }
-        });
-
-        challengeButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MemoryPuzzle.class);
-                startActivityForResult(intent, 0);
-            }
-        });
-
-        sensorButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), SensorData.class);
-                startActivityForResult(intent, 0);
-            }
-        });
     }
 
     public void setAlarms(int dayOfWeek, boolean active, AlarmData alarmData)
     {
-        Intent intent = new Intent(MainActivity.this, MemoryPuzzle.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, alarmData.getid(), intent, 0);
+
+        Intent selectedIntent;
+
+        ArrayList<Intent> validIntents = new ArrayList<Intent>();
+        Intent memIntent = new Intent(MainActivity.this,MemoryPuzzle.class);
+        Intent mathIntent = new Intent(MainActivity.this, MathPuzzle.class);
+        Intent tiltIntent = new Intent(MainActivity.this, SensorData.class);
+
+        if(Boolean.parseBoolean(alarmData.getMemEnabled()))
+            validIntents.add(memIntent);
+        if(Boolean.parseBoolean(alarmData.getMathEnabled()))
+            validIntents.add(mathIntent);
+        if(Boolean.parseBoolean(alarmData.getTiltEnabled()))
+            validIntents.add(tiltIntent);
+
+        if(alarmData.getChallenges() == 0 || validIntents.size() == 0)
+        {
+            selectedIntent = new Intent(MainActivity.this, BasicPuzzle.class);
+        }
+        else
+        {
+            Random random = new Random();
+            selectedIntent = validIntents.get(random.nextInt(validIntents.size()));
+            selectedIntent.putExtra("alarmID",alarmData.getid());
+            selectedIntent.putExtra("challengesCompleted", 0);
+        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, alarmData.getid(), selectedIntent, 0);
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         // enable alarm
@@ -211,104 +196,104 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public LinearLayout makeView(final AlarmData alarmData){
-    /*
-     * Generates a view for an  alarm bind alarm object to current
-     * context.
-     * */
+        /*
+         * Generates a view for an  alarm bind alarm object to current
+         * context.
+         * */
 
-    LinearLayout AlarmFull = new LinearLayout(this);
+        LinearLayout AlarmFull = new LinearLayout(this);
 
-    LinearLayout.LayoutParams alarmFullParams = new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-    );
+        LinearLayout.LayoutParams alarmFullParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
 
-    alarmFullParams.topMargin = 30;
-    AlarmFull.setBackgroundColor(ContextCompat.getColor(this, R.color.alarmBackground));
-    AlarmFull.setId(alarmData.getid());
-    AlarmFull.setOrientation(LinearLayout.HORIZONTAL);
-    AlarmFull.setLayoutParams(alarmFullParams);
+        alarmFullParams.topMargin = 30;
+        AlarmFull.setBackgroundColor(ContextCompat.getColor(this, R.color.alarmBackground));
+        AlarmFull.setId(alarmData.getid());
+        AlarmFull.setOrientation(LinearLayout.HORIZONTAL);
+        AlarmFull.setLayoutParams(alarmFullParams);
 
-    AlarmFull.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            MainActivity.selectedID = alarmData.getid();
-            MainActivity.isNew = false;
-            Intent intent = new Intent(v.getContext(), EditAlarm.class);
-            startActivity(intent);
-        }
-    });
+        AlarmFull.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.selectedID = alarmData.getid();
+                MainActivity.isNew = false;
+                Intent intent = new Intent(v.getContext(), EditAlarm.class);
+                startActivity(intent);
+            }
+        });
 
-    ImageView alarmIcon = new ImageView(this);
-    AlarmFull.addView(alarmIcon);
-    ViewGroup.LayoutParams iconParams = alarmIcon.getLayoutParams();
+        ImageView alarmIcon = new ImageView(this);
+        AlarmFull.addView(alarmIcon);
+        ViewGroup.LayoutParams iconParams = alarmIcon.getLayoutParams();
 
-    iconParams.height = this.getResources().getDimensionPixelSize(R.dimen.alarmIconHeight);
-    iconParams.width = this.getResources().getDimensionPixelSize(R.dimen.alarmIconWidth);
-    alarmIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.alarm_clock));
-
-
-    LinearLayout timeDiv = new LinearLayout(this);
-
-    LinearLayout.LayoutParams timeDivParams = new LinearLayout.LayoutParams(
-            this.getResources().getDimensionPixelSize(R.dimen.timeDivWidth),
-            LinearLayout.LayoutParams.WRAP_CONTENT
-    );
-    AlarmFull.addView(timeDiv);
-    timeDiv.setOrientation(LinearLayout.VERTICAL);
-    timeDiv.setLayoutParams(timeDivParams);
-
-    TextView timeView = new TextView(this);
-    timeDiv.addView(timeView);
-    ViewGroup.LayoutParams timeViewParams = timeView.getLayoutParams();
-
-    timeViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-    timeViewParams.width = this.getResources().getDimensionPixelSize(R.dimen.timeTextWidth);
-    timeView.setText(alarmData.getTimeString());
-    timeView.setPadding(this.getResources().getDimensionPixelSize(R.dimen.timeTextPaddingLeft),
-            0,0,0);
+        iconParams.height = this.getResources().getDimensionPixelSize(R.dimen.alarmIconHeight);
+        iconParams.width = this.getResources().getDimensionPixelSize(R.dimen.alarmIconWidth);
+        alarmIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.alarm_clock));
 
 
-    TextView daysView = new TextView(this);
-    timeDiv.addView(daysView);
-    ViewGroup.LayoutParams daysViewParams = daysView.getLayoutParams();
+        LinearLayout timeDiv = new LinearLayout(this);
 
-    daysViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-    daysViewParams.width = this.getResources().getDimensionPixelSize(R.dimen.daysTextWidth);
-    daysView.setText(alarmData.getDays());
-    daysView.setPadding(this.getResources().getDimensionPixelSize(R.dimen.daysTextPaddingLeft),
-            0,0,0);
+        LinearLayout.LayoutParams timeDivParams = new LinearLayout.LayoutParams(
+                this.getResources().getDimensionPixelSize(R.dimen.timeDivWidth),
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        AlarmFull.addView(timeDiv);
+        timeDiv.setOrientation(LinearLayout.VERTICAL);
+        timeDiv.setLayoutParams(timeDivParams);
 
-    TextView numChallengesView = new TextView(this);
-    AlarmFull.addView(numChallengesView);
-    ViewGroup.LayoutParams numChallengesViewParams = numChallengesView.getLayoutParams();
+        TextView timeView = new TextView(this);
+        timeDiv.addView(timeView);
+        ViewGroup.LayoutParams timeViewParams = timeView.getLayoutParams();
 
-    numChallengesViewParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-    numChallengesViewParams.width = this.getResources().getDimensionPixelSize(R.dimen.numChallengesWidth);
-    numChallengesView.setText(alarmData.getNumChallengesString());
-    numChallengesView.setPadding(this.getResources().getDimensionPixelSize(R.dimen.numChallengesPaddingLeft),
-            this.getResources().getDimensionPixelSize(R.dimen.numChallengesPaddingTop),
-            0,0);
-
-    CheckBox armAlarm = new CheckBox(this);
-    armAlarm.setGravity(Gravity.CENTER);
-    AlarmFull.addView(armAlarm);
-    ViewGroup.LayoutParams armAlarmParams = armAlarm.getLayoutParams();
-    armAlarm.setChecked(alarmData.getActive());
-
-    armAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            alarmData.setActive(isChecked);
-            alarmSetup(alarmData);
-        }
-    });
+        timeViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        timeViewParams.width = this.getResources().getDimensionPixelSize(R.dimen.timeTextWidth);
+        timeView.setText(alarmData.getTimeString());
+        timeView.setPadding(this.getResources().getDimensionPixelSize(R.dimen.timeTextPaddingLeft),
+                0,0,0);
 
 
-    armAlarmParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-    armAlarmParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        TextView daysView = new TextView(this);
+        timeDiv.addView(daysView);
+        ViewGroup.LayoutParams daysViewParams = daysView.getLayoutParams();
 
-    return AlarmFull;
+        daysViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        daysViewParams.width = this.getResources().getDimensionPixelSize(R.dimen.daysTextWidth);
+        daysView.setText(alarmData.getDays());
+        daysView.setPadding(this.getResources().getDimensionPixelSize(R.dimen.daysTextPaddingLeft),
+                0,0,0);
+
+        TextView numChallengesView = new TextView(this);
+        AlarmFull.addView(numChallengesView);
+        ViewGroup.LayoutParams numChallengesViewParams = numChallengesView.getLayoutParams();
+
+        numChallengesViewParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        numChallengesViewParams.width = this.getResources().getDimensionPixelSize(R.dimen.numChallengesWidth);
+        numChallengesView.setText(alarmData.getNumChallengesString());
+        numChallengesView.setPadding(this.getResources().getDimensionPixelSize(R.dimen.numChallengesPaddingLeft),
+                this.getResources().getDimensionPixelSize(R.dimen.numChallengesPaddingTop),
+                0,0);
+
+        CheckBox armAlarm = new CheckBox(this);
+        armAlarm.setGravity(Gravity.CENTER);
+        AlarmFull.addView(armAlarm);
+        ViewGroup.LayoutParams armAlarmParams = armAlarm.getLayoutParams();
+        armAlarm.setChecked(alarmData.getActive());
+
+        armAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                alarmData.setActive(isChecked);
+                alarmSetup(alarmData);
+            }
+        });
+
+
+        armAlarmParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        armAlarmParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+        return AlarmFull;
 
     }
 
@@ -359,9 +344,40 @@ public class MainActivity extends AppCompatActivity {
                 alarmData.getChallenges(),
                 Boolean.toString(alarmData.getActive()),
                 alarmData.isInRange(),
-                alarmData.getHasGf()
+                alarmData.getHasGf(),
+                alarmData.getMemEnabled(),
+                alarmData.getMathEnabled(),
+                alarmData.getTiltEnabled(),
+                alarmData.getChallengesCompleted()
         );
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        // user wants to create alarm-- navigate to edit alarm screen
+        if (id == R.id.addAlarmButton) {
+            MainActivity.isNew = true;
+            Intent intent = new Intent(this, EditAlarm.class);
+            startActivityForResult(intent, 0);
+
+        // show help page
+        } else if (id == R.id.action_help) {
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivityForResult(intent, 0);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

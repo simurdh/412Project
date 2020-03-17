@@ -1,3 +1,6 @@
+/**
+ * Database Manager class
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.Context;
@@ -10,7 +13,7 @@ import java.util.ArrayList;
 public class DatabaseManager extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "alarmDB";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 7;
 
     private static final String ALARM_TABLE_NAME= "alarms";
     private static final String ID = "id";
@@ -22,6 +25,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String ACTIVE = "active";
     private static final String IN_RANGE = "inRange";
     private static final String HAS_GF = "hasGeofence";
+    private static final String MEM_PUZZLE = "memoryPuzzle";
+    private static final String MATH_PUZZLE = "mathPuzzle";
+    private static final String TILT_PUZZLE = "tilePuzzle";
+    private static final String CHALLENGES_COMPLETED = "challengesCompleted";
 
 
     public DatabaseManager(Context context){
@@ -35,7 +42,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqlCreate += AM_PM + " text, " + DAYS + " text, ";
         sqlCreate += CHALLENGES + " integer, " + ACTIVE + " text, ";
         sqlCreate += IN_RANGE + " text, ";
-        sqlCreate += HAS_GF + " text)";
+        sqlCreate += HAS_GF + " text, ";
+        sqlCreate += MEM_PUZZLE + " text, ";
+        sqlCreate += MATH_PUZZLE + " text, ";
+        sqlCreate += TILT_PUZZLE + " text, ";
+        sqlCreate += CHALLENGES_COMPLETED + " integer)";
+
+        System.out.println(sqlCreate);
         db.execSQL(sqlCreate);
     }
 
@@ -44,6 +57,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * insert an alarm into database
+     * @param newAlarm alarm info to insert
+     * @return the id of newly inserted alarm
+     */
     public Integer insert(AlarmData newAlarm){
         SQLiteDatabase db  = this.getReadableDatabase();
         String sqlInsert = "insert into " + ALARM_TABLE_NAME;
@@ -53,7 +71,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqlInsert += newAlarm.getChallenges() + "', ";
         sqlInsert += "'" + newAlarm.getActive() + "', ";
         sqlInsert += "'" + newAlarm.isInRange() + "', ";
-        sqlInsert += "'" + newAlarm.getHasGf() + "')";
+        sqlInsert += "'" + newAlarm.getHasGf() + "', ";
+        sqlInsert += "'" + newAlarm.getMemEnabled() + "', ";
+        sqlInsert += "'" + newAlarm.getMathEnabled() + "', ";
+        sqlInsert += "'" + newAlarm.getTiltEnabled() + "', ";
+        sqlInsert += newAlarm.getChallengesCompleted() + ")";
 
         db.execSQL(sqlInsert);
 
@@ -82,7 +104,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public void updateById(int id, int hour, int minutes, String amPm, String days,
-                           int challenges, String active, String inRange, String hasGf){
+                           int challenges, String active, String inRange, String hasGf, String memPuzzle,
+                           String mathPuzzle, String tiltPuzzle, int challengesCompleted){
         SQLiteDatabase db = this.getReadableDatabase();
 
         String sqlUpdate = "update " + ALARM_TABLE_NAME;
@@ -93,7 +116,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqlUpdate += CHALLENGES + " = '" + challenges +"', ";
         sqlUpdate += ACTIVE + " = '" + active + "', ";
         sqlUpdate += IN_RANGE + " = '" + inRange + "', ";
-        sqlUpdate += HAS_GF + " = '" + hasGf + "' ";
+        sqlUpdate += HAS_GF + " = '" + hasGf + "', ";
+        sqlUpdate += MEM_PUZZLE + "= '" + memPuzzle + "', ";
+        sqlUpdate += MATH_PUZZLE + "= '" + mathPuzzle +"', ";
+        sqlUpdate += TILT_PUZZLE + "= '" + tiltPuzzle +"', ";
+        sqlUpdate += CHALLENGES_COMPLETED + "= '" + challengesCompleted + "' ";
         sqlUpdate += "where " + ID + " = " + id;
 
         db.execSQL(sqlUpdate);
@@ -140,7 +167,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
                     Integer.parseInt(cursor.getString(5)),
                     Boolean.parseBoolean(cursor.getString(6)),
                     Boolean.parseBoolean(cursor.getString(7)),
-                    Boolean.parseBoolean(cursor.getString(8)));
+                    Boolean.parseBoolean(cursor.getString(8)),
+                    Boolean.parseBoolean(cursor.getString(9)),
+                    Boolean.parseBoolean(cursor.getString(10)),
+                    Boolean.parseBoolean(cursor.getString(11)),
+                    Integer.parseInt(cursor.getString(12)));
         }
 
         db.close();
@@ -165,7 +196,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
                     Integer.parseInt(cursor.getString(5)),
                     Boolean.parseBoolean(cursor.getString(6)),
                     Boolean.parseBoolean(cursor.getString(7)),
-                    Boolean.parseBoolean(cursor.getString(8)));
+                    Boolean.parseBoolean(cursor.getString(8)),
+                    Boolean.parseBoolean(cursor.getString(9)),
+                    Boolean.parseBoolean(cursor.getString(10)),
+                    Boolean.parseBoolean(cursor.getString(11)),
+                    Integer.parseInt(cursor.getString(12)));
 
             alarms.add(alarm);
         }

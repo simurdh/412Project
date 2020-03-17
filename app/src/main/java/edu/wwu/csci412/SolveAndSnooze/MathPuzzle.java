@@ -1,21 +1,26 @@
+/**
+ * Math puzzle
+ */
+
 package edu.wwu.csci412.SolveAndSnooze;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.media.AudioManager;
 
-import java.nio.channels.AlreadyBoundException;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MathPuzzle extends AppCompatActivity {
@@ -34,6 +39,9 @@ public class MathPuzzle extends AppCompatActivity {
     private int[] answers = new int[3];
     private Operator[] operators = new Operator[3];
     private MediaPlayer sound;
+    private DatabaseManager db;
+    private int callingAlarmId;
+    private int challengesCompleted;
 
     // \FIELDS
 
@@ -56,11 +64,45 @@ public class MathPuzzle extends AppCompatActivity {
             }
         });
 
-        sound = MediaPlayer.create(this, R.raw.alarm);
+        setupAudio();
+        SoundManager soundSelection = SoundManager.getInstance(this);
+
+        sound = MediaPlayer.create(this, soundSelection.currSound);
         sound.setLooping(true);
+        sound.setVolume(100,100);
         sound.start();
         generateQuestions();
+
         setQuesitions();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        //Do nothing.
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+
+        activityManager.moveTaskToFront(getTaskId(), 0);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
+        {
+            //Do nothing
+        }
+        if((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
+        {
+            //Do nothing
+        }
+        return true;
     }
 
     // THESE METHODS SHOULD OUGHT TO BE IN A MODEL
@@ -187,8 +229,45 @@ public class MathPuzzle extends AppCompatActivity {
         sound.pause();
         sound.stop();
         sound.release();
-        Intent intent = new Intent(v.getContext(), MainActivity.class);
-        startActivityForResult(intent, 0);
+
+        //Get the database.
+        db = new DatabaseManager(this);
+
+        //Get the id of the alarm that was triggered.
+        callingAlarmId = this.getIntent().getIntExtra("alarmID", 0);
+
+        //Get the current number of challenges completed.
+        challengesCompleted = this.getIntent().getIntExtra("challengesCompleted",0);
+
+        ArrayList<Intent> validIntents = new ArrayList<Intent>();
+        Intent memIntent = new Intent(v.getContext(),MemoryPuzzle.class);
+        Intent mathIntent = new Intent(v.getContext(), MathPuzzle.class);
+        Intent tiltIntent = new Intent(v.getContext(), SensorData.class);
+
+        System.out.println("CALLING ALARM ID: "+callingAlarmId);
+
+        if(Boolean.parseBoolean(db.selectById(callingAlarmId).getMemEnabled()))
+            validIntents.add(memIntent);
+        if(Boolean.parseBoolean(db.selectById(callingAlarmId).getMathEnabled()))
+            validIntents.add(mathIntent);
+        if(Boolean.parseBoolean(db.selectById(callingAlarmId).getTiltEnabled()))
+            validIntents.add(tiltIntent);
+
+        challengesCompleted++;
+
+        if(db.selectById(callingAlarmId).getChallenges() == challengesCompleted)
+        {
+            Intent mainIntent = new Intent(v.getContext(), MainActivity.class);
+            startActivityForResult(mainIntent,0);
+        }
+        else
+        {
+            Random random = new Random();
+            Intent currentIntent = validIntents.get(random.nextInt(validIntents.size()));
+            currentIntent.putExtra("alarmID",callingAlarmId);
+            currentIntent.putExtra("challengesCompleted", challengesCompleted);
+            startActivityForResult(currentIntent,0);
+        }
     }
 
     private void onFailure(){
@@ -204,5 +283,15 @@ public class MathPuzzle extends AppCompatActivity {
 
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public void setupAudio()
+    {
+        AudioManager sysAudio;
+        sysAudio=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_MUSIC, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_ALARM, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_SYSTEM, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        sysAudio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 80, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
     }
 }

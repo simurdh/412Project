@@ -1,3 +1,6 @@
+/**
+ * View class for the sensor puzzle
+ */
 package edu.wwu.csci412.SolveAndSnooze;
 
 import android.content.res.Resources;
